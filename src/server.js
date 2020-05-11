@@ -1,6 +1,14 @@
 import express from 'express'
 import levelTen from './handlers/level-ten-handler'
 
+//To Dos:
+//logger middleware
+//express Helmet - security
+//yup - request validation
+//activity digest - library?
+//file system based routing
+//dockerization
+
 const app = express()
 
 app.use(express.json())

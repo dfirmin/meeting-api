@@ -3,6 +3,24 @@ import express from 'express'
 const uuid = require('uuid')
 const router =  express.Router()
 
+const MongoClient = require('mongodb').MongoClient
+
+MongoClient.connect(process.env.connectionString, { useUnifiedTopology: true })
+  .then(client => {
+    console.log('Connected to Database')
+    const db = client.db('level-ten-db')
+    const meetingsCollection = db.collection('meetings')
+  })
+  .catch(error => console.error(error))
+
+// app.post('/quotes', (req, res) => {
+//   quotesCollection.insertOne(req.body)
+//     .then(result => {
+//       console.log(result)
+//     })
+//     .catch(error => console.error(error))
+// })
+
 // Gets all meetings
 router.get('/', (req, res) => res.json(data))
 

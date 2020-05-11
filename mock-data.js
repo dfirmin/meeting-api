@@ -1,3 +1,5 @@
+// Active/inactive
+// Duration
 const members = [
   {
     id: 1,
@@ -16,6 +18,18 @@ const members = [
     name: 'HR Level 10',
     idsItem: 'Send COVID Updates to Employees',
     status: 'complete'
+  },
+  {
+    id: 4,
+    name: 'Legal Level 10',
+    idsItem: 'Check Compliance',
+    status: 'incomplete'
+  },
+  {
+    id: 5,
+    name: 'Maintenance Level 10',
+    idsItem: 'Go Over Event Plan',
+    status: 'incomplete'
   },
 ]
 
