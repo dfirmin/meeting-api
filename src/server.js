@@ -1,9 +1,9 @@
 import express from 'express'
-import levelTen from './handlers/level-ten-handler'
+import meeting from './handlers/meeting'
 
 //To Dos:
-//logger middleware
 //express Helmet - security
+//logger middleware - morgan/winston...
 //yup - request validation
 //activity digest - library?
 //file system based routing
@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }))
 
 app.get('/', (req, res) => res.send('Server running!'))
 
-app.use('/level-10', levelTen)
+app.use('/meeting', meeting)
 
 const PORT =  process.env.PORT  || 8080
 
