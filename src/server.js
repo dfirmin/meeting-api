@@ -1,8 +1,8 @@
 import express from 'express'
+import helmet from 'helmet'
 import meeting from './handlers/meeting'
 
 //To Dos:
-//express Helmet - security
 //logger middleware - morgan/winston...
 //yup - request validation
 //activity digest - library?
@@ -11,6 +11,7 @@ import meeting from './handlers/meeting'
 
 const app = express()
 
+app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
