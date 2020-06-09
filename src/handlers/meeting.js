@@ -1,6 +1,5 @@
 import data from '../../mocks/full-meeting'
 import newData from '../../mocks/new-meeting'
-import logger from '../middleware/logger'
 import express from 'express'
 //const uuid = require('uuid')
 
@@ -15,7 +14,6 @@ router.get('/:id', (req, res) => {
   const found = data.some(meeting => meeting.id === parseInt(req.params.id))
   if(found) {
     const singleMeeting = data.filter(meeting => meeting.id === parseInt(req.params.id))
-    logger.log('info', `Meeting ${parseInt(req.params.id)} data:`, {singleMeeting})
     res.json(singleMeeting)
   } else {
     res.status(400).json({ msg: `No meeting with the id of ${req.params.id}`})

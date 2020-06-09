@@ -1,8 +1,10 @@
 import express from 'express'
 import helmet from 'helmet'
+import createError from 'http-errors'
 import cors from 'cors'
 import meeting from './handlers/meeting'
-import logger from './middleware/logger'
+import winston from './middleware/winston'
+import morgan from 'morgan'
 
 //To Dos:
 //yup - request validation
@@ -10,22 +12,27 @@ import logger from './middleware/logger'
 //activity digest - library?
 
 const app = express()
-const router =  express.Router()
 
 app.use(cors())
 app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(morgan('combined', { stream: winston.stream }))
 
 app.get('/', (req, res) => res.send('Server running!'))
-
-//Simulated error
-app.get('/error', function(req, res, next) {
-  return next(new Error("This is a simulated error!"));
-})
 
 app.use('/meeting', meeting)
 
 const PORT =  process.env.PORT  || 8080
 
-app.listen(PORT, () => logger.log('info', `Server started on port ${PORT}`))
+app.use(function(req, res, next) {
+  next(createError(404))
+})
+
+app.use(function(err, req, res, next) {
+  //include winston logging
+  winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+  res.send(`${err.status} - ${err.message}`)
+})
+
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
