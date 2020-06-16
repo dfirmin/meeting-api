@@ -3,7 +3,7 @@ import helmet from 'helmet'
 import createError from 'http-errors'
 import morgan from 'morgan'
 import cors from 'cors'
-import meeting from './handlers/meeting'
+import routes from './routes/index'
 import winston from './middleware/winston'
 
 //To Dos:
@@ -21,7 +21,7 @@ app.use(morgan('combined', { stream: winston.stream }))
 
 app.get('/', (req, res) => res.send('Server running!'))
 
-app.use('/meeting', meeting)
+app.use('/', routes)
 
 const PORT = process.env.PORT || 8080
 
