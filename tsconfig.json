@@ -6,7 +6,8 @@
     "preserveConstEnums": true,
     "outFile": "./lib/tsc.js",
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "target": "ES6"
   },
   "include": [
     "src/**/*"
