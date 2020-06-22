@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config --exec babel-node src/server.js ",
+    "dev": "npm run build && npm run serve",
+    "build": "tsc",
+    "serve": "nodemon -r dotenv/config --exec node lib/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
