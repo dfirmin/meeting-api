@@ -1,19 +1,18 @@
 // GET /action-items?userId=0&complete=false&isActive=true (Return Array of Action Items)
 // POST /action-items (Create an action item - return the ID of the item)
 // PUT /action-items/:id (update an action item - return 200 on success)
-import { Request, Response } from "express";
+import { RequestHandler } from "express";
 import {updateActionItem, getAllActionItems, createActionItems} from '../services/action-item'
+import Item from '../models/item'
 
-
-
-export const getActionItems = async (req: Request, res: Response) => {
+export const getActionItems: RequestHandler = async (req, res) => {
   const filter = {
     userId: req.query.userId,
     completed: req.query.completed,
     isActive: req.query.isActive,
   }
   try {
-    const actionItems: [] = await getAllActionItems(filter)
+    const actionItems: Item[] = await getAllActionItems(filter)
     res.json({
       ok: true,
       message: 'Success',
@@ -27,8 +26,8 @@ export const getActionItems = async (req: Request, res: Response) => {
   }
 }
 
-export const postActionItems = async (req: Request, res: Response) => {
-  const actionItems: [] = req.body
+export const postActionItems: RequestHandler = async (req, res) => {
+  const actionItems: Item[] = req.body
   try {
     const actionItemId: number = await createActionItems(actionItems)
     //other service calls
@@ -44,7 +43,7 @@ export const postActionItems = async (req: Request, res: Response) => {
   }
 }
 
-export const putActionItem = (req: Request, res: Response) => {
+export const putActionItem: RequestHandler = async (req, res) => {
   const actionItemId: number = req.param.id
   try {
     await updateActionItem(actionItemId)
@@ -56,6 +55,6 @@ export const putActionItem = (req: Request, res: Response) => {
   }
 }
 
-export const getActionItem = () => {
-  
+export const getActionItem: RequestHandler = () => {
+
 }

@@ -9,14 +9,6 @@ export const createActionItems = async (actionItems) => {
   }
 }
 
-export const deleteActionItem = async (id: number) => {
-  try {
-    return await action_item.destroy(id)
-  } catch(e) {
-    throw new Error(e.message)
-  }
-}
-
 export const updateActionItem = async (id: number) => {
   try {
     return await action_item.update(id)
