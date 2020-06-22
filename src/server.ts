@@ -1,10 +1,10 @@
 import express from 'express'
 import helmet from 'helmet'
 import createError from 'http-errors'
-import cors from 'cors'
-import meeting from './handlers/meeting'
-import winston from './middleware/winston'
 import morgan from 'morgan'
+import cors from 'cors'
+import routes from './routes/index'
+import winston from './middleware/winston'
 
 //To Dos:
 //yup - request validation
@@ -21,15 +21,15 @@ app.use(morgan('combined', { stream: winston.stream }))
 
 app.get('/', (req, res) => res.send('Server running!'))
 
-app.use('/meeting', meeting)
+app.use('/', routes)
 
-const PORT =  process.env.PORT  || 8080
+const PORT = process.env.PORT || 8080
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404))
 })
 
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   //include winston logging
   winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
   res.send(`${err.status} - ${err.message}`)
