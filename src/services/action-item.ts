@@ -1,34 +1,38 @@
-//const knex = require('../knex/database');
-import action_items from '../'
+import knex from '../knex/database'
+import Item from '../models/item'
+import ActionItemData from '../data/action_item';
 
-export const createActionItems = async (actionItems) => {
+const db = new ActionItemData(knex)
+
+export const createActionItems = async (actionItem: Item) => {
+  
   try {
-    return await action_item.create(actionItems)
+    return await db.create(actionItem)
   } catch(e) {
     throw new Error(e.message)
   }
 }
 
-export const updateActionItem = async (id: number) => {
+export const updateActionItem = async (id: string, actionItem: Item) => {
   try {
-    return await action_item.update(id)
+    return await db.update(id, actionItem)
   } catch(e) {
     throw new Error(e.message)
   }
 }
 
-export const getActionItem = async (id: number) => {
+export const getActionItem = async (id: string) => {
   try {
-    return await action_item.findById(id)
+    return await db.findById(id)
   }
   catch(e) {
     throw new Error(e.message)
   }
 }
 
-export const getAllActionItems = async (filter: {userId: number, completed: boolean, isActive: boolean}) => {
+export const getAllActionItems = async (filter: {userId: string, completed: string, isActive: string}) => {
   try {
-    return await action_item.find(filter)
+    return await db.find(filter)
   }
   catch(e) {
     throw new Error(e.message)
