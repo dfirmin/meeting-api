@@ -3,7 +3,7 @@ import Knex from 'knex'
 
 class IdsData extends BaseData {
 
-  tableName: string = 'update'
+  tableName: string = 'item'
   selectableProps:string[] = ['description', 'priority', 'isActive']
   timeout:number = 1000
   
