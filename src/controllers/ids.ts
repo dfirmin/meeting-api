@@ -7,7 +7,7 @@ import Item from '../models/item'
 
 
 export const postIds: RequestHandler = async (req, res, next) => {
-  const ids: Item[] = req.body
+  const ids: Item = req.body
   try {
     const actionItemId: string = await createIds(ids)
     res.json({

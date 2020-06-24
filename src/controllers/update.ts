@@ -7,7 +7,7 @@ import Item from '../models/item'
 
 
 export const postUpdate: RequestHandler = async (req, res, next) => {
-  const update: Item[] = req.body
+  const update: Item = req.body
   try {
     const updateId: string = await createUpdate(update)
     res.json({

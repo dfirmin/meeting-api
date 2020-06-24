@@ -1,11 +1,11 @@
 import BaseCrud from '../helpers/base-data'
 import { QueryBuilder } from 'knex'
 
-const name: string = 'IDS'
+const name: string = 'Action Item'
 const tableName: string = 'item'
 const selectableProps: string[] = ['description', 'priority', 'isActive']
 
-export const idsData = (knex: QueryBuilder) => {
+export const actionItemData = (knex: QueryBuilder) => {
   const details = BaseCrud({
     knex,
     name,

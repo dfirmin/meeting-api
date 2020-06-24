@@ -1,13 +1,11 @@
 import knex from '../knex/database'
 import Item from '../models/item'
-import IdsData from '../data/ids';
-
-const db = new IdsData(knex)
+const { idsData } = require('../data/ids-item')(knex)
 
 export const createIds = async (ids: Item) => {
   
   try {
-    return await db.create(ids)
+    return await idsData.create(ids)
   } catch(e) {
     throw new Error(e.message)
   }
@@ -15,7 +13,7 @@ export const createIds = async (ids: Item) => {
 
 export const updateIds = async (id: string, ids: Item) => {
   try {
-    return await db.update(id, ids)
+    return await idsData.update(id, ids)
   } catch(e) {
     throw new Error(e.message)
   }
