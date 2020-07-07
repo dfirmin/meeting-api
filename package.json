@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run build && npm run serve",
+    "dev": "nodemon",
     "build": "tsc",
-    "serve": "nodemon -r dotenv/config --exec node lib/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,10 +14,11 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-promise-router": "^4.0.1",
     "helmet": "^3.22.0",
     "http-errors": "^1.7.3",
-    "knex": "^0.21.1",
     "morgan": "^1.10.0",
+    "pg": "^8.2.1",
     "typescript": "^3.9.5",
     "uuid": "^8.0.0",
     "winston": "^3.2.1"
@@ -29,6 +29,7 @@
     "@types/helmet": "0.0.47",
     "@types/http-errors": "^1.6.3",
     "@types/morgan": "^1.9.0",
+    "@types/pg": "^7.14.3",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "dotenv": "^8.2.0",
@@ -36,6 +37,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
     "nodemon": "^2.0.3",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.2"
   }
 }
