@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
 import createError from 'http-errors'
 import morgan from 'morgan'
@@ -29,10 +29,12 @@ app.use(function (req, res, next) {
   next(createError(404))
 })
 
-app.use(function (err, req, res, next) {
+const errorHandler: ErrorRequestHandler = function (err, req, res) {
   //include winston logging
   winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
   res.send(`${err.status} - ${err.message}`)
-})
+}
+
+app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
