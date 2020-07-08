@@ -1,19 +1,19 @@
-import knex from '../knex/database'
 import Item from '../models/item'
-const actionItemData = require('../data/action-item')(knex)
+import { ActionItemData } from '../data/action-item'
+import pool from ''
 
 export const createActionItems = async (actionItem: Item) => {
   
   try {
-    return await actionItemData.create(actionItem)
+    return await ActionItemData(pool).create(actionItem)
   } catch(e) {
     throw new Error(e.message)
   }
 }
 
-export const updateActionItem = async (id: string, actionItem: Item) => {
+export const updateActionItem = async (actionItem: Item) => {
   try {
-    return await actionItemData.update(id, actionItem)
+    return await ActionItemData(pool).update(actionItem)
   } catch(e) {
     throw new Error(e.message)
   }
@@ -21,7 +21,7 @@ export const updateActionItem = async (id: string, actionItem: Item) => {
 
 export const getActionItem = async (id: string) => {
   try {
-    return await actionItemData.findById(id)
+    return await ActionItemData(pool).getOne(id)
   }
   catch(e) {
     throw new Error(e.message)
@@ -30,7 +30,7 @@ export const getActionItem = async (id: string) => {
 
 export const getAllActionItems = async (filter: {}) => {
   try {
-    return await actionItemData.find(filter)
+    return await ActionItemData(pool).getAll()
   }
   catch(e) {
     throw new Error(e.message)

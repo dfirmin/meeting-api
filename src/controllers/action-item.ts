@@ -5,6 +5,7 @@ import { RequestHandler } from "express";
 import createError from 'http-errors'
 import {updateActionItem, getAllActionItems, createActionItems} from '../services/action-item'
 import Item from '../models/item'
+import { QueryResult } from "pg";
 
 export const getActionItems: RequestHandler = async (req, res, next) => {
   const filter = {
@@ -13,7 +14,7 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
     isActive: req.query.isActive,
   }
   try {
-    const actionItems: Item[] = await getAllActionItems(filter)
+    const actionItems: QueryResult<Item> = await getAllActionItems(filter)
     res.json({
       ok: true,
       message: 'Success',
@@ -29,7 +30,7 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
 export const postActionItems: RequestHandler = async (req, res, next) => {
   const actionItems: Item = req.body
   try {
-    const actionItemId: number = await createActionItems(actionItems)
+    const actionItemId: string = await createActionItems(actionItems)
 
     res.json({
       ok: true,
@@ -46,7 +47,7 @@ export const putActionItem: RequestHandler = async (req, res, next) => {
   const actionItemId: string = req.params.id
   const actionItem: Item = req.body
   try {
-    await updateActionItem(actionItemId, actionItem)
+    await updateActionItem(actionItem)
     res.sendStatus(200)
   }
   catch(e) {
