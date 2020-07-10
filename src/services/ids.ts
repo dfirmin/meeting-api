@@ -1,19 +1,18 @@
-import knex from '../knex/database'
 import Item from '../models/item'
-const { idsData } = require('../data/ids-item')(knex)
+import { IdsData } from '../data/ids'
 
 export const createIds = async (ids: Item) => {
   
   try {
-    return await idsData.create(ids)
+    return await IdsData().create(ids)
   } catch(e) {
     throw new Error(e.message)
   }
 }
 
-export const updateIds = async (id: string, ids: Item) => {
+export const updateIds = async (ids: Item) => {
   try {
-    return await idsData.update(id, ids)
+    return await IdsData().update(ids)
   } catch(e) {
     throw new Error(e.message)
   }

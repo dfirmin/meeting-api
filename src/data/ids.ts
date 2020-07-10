@@ -1,21 +1,46 @@
-import BaseCrud from '../helpers/base-data'
-import { QueryBuilder } from 'knex'
+import Item from '../models/item'
+import { query } from '../db/index'
 
-const name: string = 'IDS'
-const tableName: string = 'item'
-const selectableProps: string[] = ['description', 'priority', 'isActive']
+interface IIdsData {
+  create: (props: Item) => Promise<Item[]>
+  update: (props: Item) => void
+}
 
-export const idsData = (knex: QueryBuilder) => {
-  const details = BaseCrud({
-    knex,
-    name,
-    tableName,
-    selectableProps
-  })
-  //if needed, overwrite default behavor 
-  //example: overwrite create function to add a before save function
-  //const create = props => beforeCreate(props).then(user => model_crud.create(user))
+export const IdsData = (): IIdsData => {
+
+  const create = async (props: Item) => {
+    const createQuery = `INSERT INTO items 
+    (description, priority, date_completed, user_id, meeting_series_id, section_id, date_archived, is_active)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
+  
+    delete props.id
+    let insertValues = Object.values(props)
+    const id: Item[] = await query(createQuery, insertValues)
+      .then((res) => {
+        return res.rows[0]
+      })
+      .catch(((e) => {
+        console.error(e.stack)
+        return [] as Item[]
+      }))
+    return id
+  }
+  
+  const update = async (props: Item) => {
+    const updateQuery = `UPDATE items
+    SET description = $2, priority = $3, date_completed = $4, user_id = $5, meeting_series_id = $6, section_id = $7, date_archived = $8, is_active = $9
+    WHERE id = $1;`
+
+    let updateValues = Object.values(props)
+    await query(updateQuery, updateValues)
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  
   return{
-    ...details
+    create,
+    update
   }
 }
