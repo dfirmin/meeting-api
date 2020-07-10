@@ -1,11 +1,10 @@
 import Item from '../models/item'
 import { ActionItemData } from '../data/action-item'
-import pool from ''
 
 export const createActionItems = async (actionItem: Item) => {
   
   try {
-    return await ActionItemData(pool).create(actionItem)
+    return await ActionItemData().create(actionItem)
   } catch(e) {
     throw new Error(e.message)
   }
@@ -13,7 +12,7 @@ export const createActionItems = async (actionItem: Item) => {
 
 export const updateActionItem = async (actionItem: Item) => {
   try {
-    return await ActionItemData(pool).update(actionItem)
+    return await ActionItemData().update(actionItem)
   } catch(e) {
     throw new Error(e.message)
   }
@@ -21,16 +20,16 @@ export const updateActionItem = async (actionItem: Item) => {
 
 export const getActionItem = async (id: string) => {
   try {
-    return await ActionItemData(pool).getOne(id)
+    return await ActionItemData().getOne(id)
   }
   catch(e) {
     throw new Error(e.message)
   }
 }
 
-export const getAllActionItems = async (filter: {}) => {
+export const getAllActionItems = async (filter: { userId:string, completed:string, isActive:string }) => {
   try {
-    return await ActionItemData(pool).getAll()
+    return await ActionItemData().getAll(filter)
   }
   catch(e) {
     throw new Error(e.message)

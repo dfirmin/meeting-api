@@ -1,70 +1,77 @@
 import Item from '../models/item'
-import { Pool, QueryResult, Query} from 'pg'
+import { query } from '../db/index'
 
 
-interface ActionItemData {
-  create: (props: Item) => Promise<string>
+interface IActionItemData {
+  create: (props: Item) => Promise<Item[]>
   update: (props: Item) => void
-  getAll: () => Promise<QueryResult>
-  getOne: (id: string) => {}
+  getAll: (filter: { userId:string, completed:string, isActive:string }) => Promise<Item[][]>
+  getOne: (id: string) => Promise<Item[]>
 }
 
-export const ActionItemData = (pool: Pool): ActionItemData => {
+export const ActionItemData = (): IActionItemData => {
 
-  const create = async (props: Item): Promise<string> => {
+  const create = async (props: Item) => {
     const createQuery = `INSERT INTO items 
-    (description, priority, dateCompleted, userId, meetingSeriesId, sectionId, dateArchived, isActive)
+    (description, priority, date_completed, user_id, meeting_series_id, section_id, date_archived, is_active)
     VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
   
     delete props.id
     let insertValues = Object.values(props)
-    try {
-      const id: Promise<string> = await pool.query(createQuery, insertValues)
-      .then((res) => {
-        return res.rows[0].id
-      })
-      return id
-    }
-    catch(err) {
-      console.log(err.stack)
-      return err.stack
-    }
-    
+    const id: Item[] = await query(createQuery, insertValues)
+    .then((res) => {
+      return res.rows[0]
+    })
+    .catch((e) => {
+      console.log(e)
+      return []
+    })
+    return id 
   }
   
   const update = async (props: Item) => {
     const updateQuery = `UPDATE items
-    SET description = $2, priority = $3, dateCompleted = $4, userId = $5, meetingSeriesId = $6, sectionId = $7, dateArchived = $8, isActive = $9
+    SET description = $2, priority = $3, date_completed = $4, user_id = $5, meeting_series_id = $6, section_id = $7, date_archived = $8, is_active = $9
     WHERE id = $1;`
 
     let updateValues = Object.values(props)
-    pool.query(updateQuery, updateValues)
+    await query(updateQuery, updateValues)
       .catch(e => console.error(e.stack))
   }
 
-  const getAll = async () => {
-    const getQuery = `SElECT * FROM items`
-    try {
-      const data: QueryResult = await pool.query(getQuery)
-      return data
-    } catch (err) {
-      console.log(err.stack)
-      return err.stack
+  const getAll = async (filter: { userId:string, completed:string, isActive:string }) => {
+    let getQuery = `SElECT * FROM items WHERE user_id = $1`
+    const getValues = []
+    getValues.push(filter.userId)
+
+    if(filter.completed){
+      getQuery +=  'AND completed = $2'
+      getValues.push(filter.completed)
     }
+    if(filter.isActive){
+      getQuery +=  'AND is_active = $3'
+      getValues.push(filter.isActive)
+    }
+    
+    const data: Item[][] = await query(getQuery, getValues)
+      .then((res) => { 
+        return res.rows
+      })
+      .catch((e) => {
+        console.log(e)
+        return [] as Item[][]
+      })
+    return data
   }
 
   const getOne = async (id: string) => {
     const getQuery = `SElECT * FROM items WHERE id = $1`
     
-    try {
-      const user = await pool.query(getQuery, [id])
-      .then((res) => {
-        return res.rows[0]
-      })
-      return user
-    } catch (err) {
-      console.log(err.stack)
-    }
+    const item: Item[] = await query(getQuery, [id])
+    .then((res) => {
+      return res.rows[0]
+    })
+    return item
   }
   
   return{
