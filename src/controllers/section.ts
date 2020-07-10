@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import { getAllSections, updateSection } from '../services/section'
+import { getAll, update } from '../services/section'
 import Section from '../models/section'
 
 export const getSections: RequestHandler = async (req, res, next) => {
@@ -11,7 +11,7 @@ export const getSections: RequestHandler = async (req, res, next) => {
     return next(createError(400, 'Missing seriesId in querystring'))
   }
   try {
-    const seriesSections: Section[][] = await getAllSections(seriesId)
+    const seriesSections: Section[][] = await getAll(seriesId)
     return res.json(seriesSections)
   }
   catch(e) {
@@ -23,7 +23,7 @@ export const putSection: RequestHandler = async (req, res, next) => {
   const section: Section = req.body
   // TODO - Given the sectionId, update the section in the database with that id
   try {
-    await updateSection(section)
+    await update(section)
     return res.sendStatus(200)
   }
   catch(err) {

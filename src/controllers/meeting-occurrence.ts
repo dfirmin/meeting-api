@@ -4,9 +4,9 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import MeetingOccurrence from '../models/meeting-occurrence'
-import { getSingleMeetingOccurrence, getAllMeetingOccurrences, updateMeetingOccurrence} from '../services/meeting-occurrence'
+import { getOne, getAll as getAllMeetingOccurrences, update } from '../services/meeting-occurrence'
 import SectionOccurrence from '../models/section-occurrence';
-import { getAllSectionOccurrences } from '../services/section-occurrence';
+import { getAll as getAllSectionOccurrences }  from '../services/section-occurrence';
 
 
 export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
@@ -17,7 +17,7 @@ export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
   //   return next(createError(404, `No meeting occurrence with ID ${meetingOccurrenceId} was found`))
   // }
   try {
-    const meetingOccurrence: MeetingOccurrence[] = await getSingleMeetingOccurrence(meetingOccurrenceId)
+    const meetingOccurrence: MeetingOccurrence[] = await getOne(meetingOccurrenceId)
     if(meetingOccurrence && meetingOccurrence.length > 0){
       const filter = {
         seriesId: meetingOccurrence[0].meetingSeriesId,
@@ -61,7 +61,7 @@ export const putMeetingOccurrence: RequestHandler = async (req, res, next) => {
   
   // TODO - Given the sectionId, update the section with a timeSpent in the database with that id
   const meetingOccurrence: MeetingOccurrence = req.body
-  await updateMeetingOccurrence(meetingOccurrence)
+  await update(meetingOccurrence)
   const dbErr = false
   if (dbErr) {
     return next(createError())

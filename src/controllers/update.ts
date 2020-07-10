@@ -2,14 +2,14 @@
 // PUT /updates/:id (update an update item - return 200 on success)
 import { RequestHandler } from "express";
 import createError from 'http-errors'
-import {updateUpdate, createUpdate} from '../services/update'
+import { update, create } from '../services/update'
 import Item from '../models/item'
 
 
 export const postUpdate: RequestHandler = async (req, res, next) => {
-  const update: Item = req.body
+  const data: Item = req.body
   try {
-    const updateId: Item[] = await createUpdate(update)
+    const updateId: Item[] = await create(data)
     res.json({id: updateId})
   }
   catch(e) {
@@ -18,9 +18,9 @@ export const postUpdate: RequestHandler = async (req, res, next) => {
 }
 
 export const putUpdate: RequestHandler = async (req, res, next) => {
-  const update: Item = req.body
+  const data: Item = req.body
   try {
-    await updateUpdate(update)
+    await update(data)
     res.sendStatus(200)
   }
   catch(e) {

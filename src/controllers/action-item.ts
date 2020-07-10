@@ -3,7 +3,7 @@
 // PUT /action-items/:id (update an action item - return 200 on success)
 import { RequestHandler } from "express";
 import createError from 'http-errors'
-import {updateActionItem, getAllActionItems, createActionItems} from '../services/action-item'
+import { update, getAll, create } from '../services/action-item'
 import Item from '../models/item'
 
 export const getActionItems: RequestHandler = async (req, res, next) => {
@@ -13,7 +13,7 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
     isActive: req.query.isActive as string,
   }
   try {
-    const actionItems: Item[][] = await getAllActionItems(filter)
+    const actionItems: Item[][] = await getAll(filter)
     res.json(actionItems)
   }
   catch(e) {
@@ -24,7 +24,7 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
 export const postActionItems: RequestHandler = async (req, res, next) => {
   const actionItems: Item = req.body
   try {
-    const actionItemId: Item[] | void = await createActionItems(actionItems)
+    const actionItemId: Item[] | void = await create(actionItems)
 
     res.json({ id: actionItemId })
   }
@@ -36,7 +36,7 @@ export const postActionItems: RequestHandler = async (req, res, next) => {
 export const putActionItem: RequestHandler = async (req, res, next) => {
   const actionItem: Item = req.body
   try {
-    await updateActionItem(actionItem)
+    await update(actionItem)
     res.sendStatus(200)
   }
   catch(e) {
@@ -44,6 +44,3 @@ export const putActionItem: RequestHandler = async (req, res, next) => {
   }
 }
 
-export const getActionItem: RequestHandler = () => {
-
-}

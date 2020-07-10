@@ -1,28 +1,39 @@
 import MeetingOccurrence from '../models/meeting-occurrence'
-import { MeetingOccurrenceData } from '../data/meeting-occurrence'
+import { query } from '../db/index'
 
-export const updateMeetingOccurrence = async (meetingOccurrence: MeetingOccurrence) => {
-  try {
-    return await MeetingOccurrenceData().update(meetingOccurrence)
-  } catch(e) {
-    throw new Error(e.message)
-  }
+export const update = async (props: MeetingOccurrence) => {
+  const updateQuery = `UPDATE meeting_occurrence
+  SET date = $2, time_spent = $3, meeting_id = $4
+  WHERE id = $1;`
+
+  let updateValues = Object.values(props)
+  query(updateQuery, updateValues)
+    .catch(e => console.error(e.stack))
 }
 
-export const getSingleMeetingOccurrence =  async (id: string) => {
-  try {
-    return  await MeetingOccurrenceData().getOne(id)
-  }
-  catch(e) {
-    throw new Error(e.message)
-  }
+
+export const getAll = async (teamId: string): Promise<MeetingOccurrence[][]> => {
+  const getQuery = `SElECT * FROM meeting_occurrence WHERE team_id  =  $1`
+  const data: MeetingOccurrence[][] = await query(getQuery, [teamId])
+    .then((res) => {
+      return res.rows
+    })
+    .catch((e) => {
+      console.log(e)
+      return [] as MeetingOccurrence[][]
+    })
+  return data
 }
 
-export const getAllMeetingOccurrences = async (teamId: string) => {
-  try {
-    return await MeetingOccurrenceData().getAll(teamId)
-  }
-  catch(e) {
-    throw new Error(e.message)
-  }
+export const getOne = async (id: string): Promise<MeetingOccurrence[]> => {
+  const getQuery = `SElECT * FROM meeting_occurrence WHERE id = $1`
+  const data: MeetingOccurrence[] = await query(getQuery, [id])
+    .then((res) => {
+      return res.rows[0]
+    })
+    .catch((e) => {
+      console.log(e)
+      return [] as MeetingOccurrence[]
+    })
+  return data
 }

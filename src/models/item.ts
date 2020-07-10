@@ -1,5 +1,5 @@
 export default interface Item {
-  id: number;
+  id: string;
   description: string;
   priority: number;
   dateCompleted: boolean;

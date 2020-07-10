@@ -1,24 +1,5 @@
 {
   "compilerOptions": {
-<<<<<<< HEAD
-    "module": "system",
-    "noImplicitAny": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "outFile": "./lib/tsc.js",
-    "sourceMap": true,
-    "strict": true,
-    "target": "ES6"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
-}
-=======
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Basic Options */
@@ -86,4 +67,3 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   }
 }
->>>>>>> a63e4d3089de0decea4ec749e3badfb41c8b53e9
