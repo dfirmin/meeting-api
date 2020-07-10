@@ -9,26 +9,21 @@ import Item from '../models/item'
 export const postUpdate: RequestHandler = async (req, res, next) => {
   const update: Item = req.body
   try {
-    const updateId: string = await createUpdate(update)
-    res.json({
-      ok: true,
-      message: 'Update Created',
-      updateId
-    })
+    const updateId: Item[] = await createUpdate(update)
+    res.json({id: updateId})
   }
   catch(e) {
-    return next(createError(404, `An error has occured`))
+    return next(createError(500, e))
   }
 }
 
 export const putUpdate: RequestHandler = async (req, res, next) => {
-  const updateId: string = req.params.id
   const update: Item = req.body
   try {
-    await updateUpdate(updateId, update)
+    await updateUpdate(update)
     res.sendStatus(200)
   }
   catch(e) {
-    return next(createError(404, `An error has occured`))
+    return next(createError())
   }
 }
