@@ -1,24 +1,33 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
+import { getAllSections, updateSection } from '../services/section'
 import Section from '../models/section'
 
-export const getSections: RequestHandler = (req, res, next) => {
-  const { seriesId } = req.query
+export const getSections: RequestHandler = async (req, res, next) => {
+  // TODO - Given that we have a seriesId, we should attempt to fetch all sections for that series from the database
+  // TODO - If no records are found (meaining the sectionId does not exist), how should we handle this?
+  const seriesId = req.query.seriesId as string
   if (!seriesId) {
     return next(createError(400, 'Missing seriesId in querystring'))
   }
-  // TODO - Given that we have a seriesId, we should attempt to fetch all sections for that series from the database
-  // TODO - If no records are found (meaining the sectionId does not exist), how should we handle this?
-  const seriesSections: Section[] = []
-  return res.json(seriesSections)
+  try {
+    const seriesSections: Section[][] = await getAllSections(seriesId)
+    return res.json(seriesSections)
+  }
+  catch(e) {
+    return next(createError(e))
+  }
 }
 
-export const updateSection: RequestHandler = (req, res, next) => {
-  const sectionId: string = req.params.id
+export const putSection: RequestHandler = async (req, res, next) => {
+  const section: Section = req.body
   // TODO - Given the sectionId, update the section in the database with that id
-  const dbErr = false
-  if (dbErr) {
-    return next(createError(404, `No section with id ${sectionId} was found`))
+  try {
+    await updateSection(section)
+    return res.sendStatus(200)
   }
-  return res.sendStatus(204)
+  catch(err) {
+    return next(createError())
+  }
+  
 }
