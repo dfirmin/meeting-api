@@ -12,7 +12,7 @@ export const getSections: RequestHandler = async (req, res, next) => {
   }
   try {
     const seriesSections: Section[][] = await getAll(seriesId)
-    return res.json(seriesSections)
+    return res.status(200).json(seriesSections)
   }
   catch(e) {
     return next(createError(e))
@@ -24,10 +24,10 @@ export const putSection: RequestHandler = async (req, res, next) => {
   // TODO - Given the sectionId, update the section in the database with that id
   try {
     await update(section)
-    return res.sendStatus(200)
+    return res.sendStatus(200).send(`Meeting modified with ID: ${section.id}`)
   }
-  catch(err) {
-    return next(createError())
+  catch(e) {
+    return next(createError(e))
   }
   
 }

@@ -8,7 +8,9 @@ export const update = async (props: MeetingOccurrence) => {
 
   let updateValues = Object.values(props)
   query(updateQuery, updateValues)
-    .catch(e => console.error(e.stack))
+    .catch((e) => {
+      throw new Error(e)
+    })
 }
 
 
@@ -19,8 +21,7 @@ export const getAll = async (teamId: string): Promise<MeetingOccurrence[][]> => 
       return res.rows
     })
     .catch((e) => {
-      console.log(e)
-      return [] as MeetingOccurrence[][]
+      throw new Error(e)
     })
   return data
 }
@@ -32,8 +33,7 @@ export const getOne = async (id: string): Promise<MeetingOccurrence[]> => {
       return res.rows[0]
     })
     .catch((e) => {
-      console.log(e)
-      return [] as MeetingOccurrence[]
+      throw new Error(e)
     })
   return data
 }

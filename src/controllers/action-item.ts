@@ -14,7 +14,7 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
   }
   try {
     const actionItems: Item[][] = await getAll(filter)
-    res.json(actionItems)
+    res.status(200).json(actionItems)
   }
   catch(e) {
     return next(createError(e))
@@ -25,8 +25,7 @@ export const postActionItems: RequestHandler = async (req, res, next) => {
   const actionItems: Item = req.body
   try {
     const actionItemId: Item[] | void = await create(actionItems)
-
-    res.json({ id: actionItemId })
+    res.status(201).json({ id: actionItemId })
   }
   catch(e) {
     return next(createError(e))
@@ -37,7 +36,7 @@ export const putActionItem: RequestHandler = async (req, res, next) => {
   const actionItem: Item = req.body
   try {
     await update(actionItem)
-    res.sendStatus(200)
+    res.sendStatus(200).send(`Item modified with ID: ${actionItem.id}`)
   }
   catch(e) {
     return next(createError(e))

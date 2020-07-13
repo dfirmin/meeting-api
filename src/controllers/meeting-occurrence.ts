@@ -24,7 +24,7 @@ export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
         date: meetingOccurrence[0].date
       }
       const sectionOccurrences: SectionOccurrence[][] | null= await getAllSectionOccurrences(filter)
-      return res.json({
+      return res.status(200).json({
         meetingOccurrence,
         sectionOccurrences
       })
@@ -49,7 +49,7 @@ export const getMeetingOccurrences: RequestHandler = async (req, res, next) => {
   }
   try{
     const meetingOccurrences: MeetingOccurrence[][] = await getAllMeetingOccurrences(teamId)
-    return res.json(meetingOccurrences)
+    return res.status(200).json(meetingOccurrences)
   }
   catch(e){
     return next(createError(e))
@@ -61,10 +61,11 @@ export const putMeetingOccurrence: RequestHandler = async (req, res, next) => {
   
   // TODO - Given the sectionId, update the section with a timeSpent in the database with that id
   const meetingOccurrence: MeetingOccurrence = req.body
-  await update(meetingOccurrence)
-  const dbErr = false
-  if (dbErr) {
-    return next(createError())
+  try{
+    await update(meetingOccurrence)
+    return res.status(200).send(`Meeting modified with ID: ${meetingOccurrence.id}`)
   }
-  return res.sendStatus(204)
+  catch(e){
+    return next(createError(e))
+  }
 }

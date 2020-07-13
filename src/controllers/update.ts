@@ -10,10 +10,10 @@ export const postUpdate: RequestHandler = async (req, res, next) => {
   const data: Item = req.body
   try {
     const updateId: Item[] = await create(data)
-    res.json({id: updateId})
+    res.status(201).json({id: updateId})
   }
   catch(e) {
-    return next(createError(500, e))
+    return next(createError(e))
   }
 }
 
@@ -21,9 +21,9 @@ export const putUpdate: RequestHandler = async (req, res, next) => {
   const data: Item = req.body
   try {
     await update(data)
-    res.sendStatus(200)
+    res.sendStatus(200).send(`Item modified with ID: ${data.id}`)
   }
   catch(e) {
-    return next(createError())
+    return next(createError(e))
   }
 }

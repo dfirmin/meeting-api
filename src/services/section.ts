@@ -18,8 +18,7 @@ export const getAll = async (meetingSeriesId: string): Promise<Section[][]> => {
       return res.rows
     })
     .catch((e) => {
-      console.log(e)
-      return [] as Section[][]
+      throw new Error(e)
     })
   return data
 }

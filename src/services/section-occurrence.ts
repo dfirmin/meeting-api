@@ -15,8 +15,7 @@ export const getAll = async (filter: { seriesId: string, date: Date }): Promise<
       return res.rows
     })
     .catch((e) => {
-      console.log(e)
-      return [] as SectionOccurrence[][]
+      throw new Error(e)
     })
   return data
 }

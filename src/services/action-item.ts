@@ -13,8 +13,7 @@ export const create = async (props: Item): Promise<Item[]> => {
     return res.rows[0]
   })
   .catch((e) => {
-    console.log(e)
-    return []
+    throw new Error(e.message)
   })
   return item
 }
@@ -26,7 +25,9 @@ export const update = async (props: Item) => {
 
   let updateValues = Object.values(props)
   await query(updateQuery, updateValues)
-    .catch(e => console.error(e.stack))
+    .catch((e) => {
+      throw new Error(e.message)
+    })
 }
 
 export const getAll = async (filter: { userId:string, completed:string, isActive:string }) => {
@@ -48,8 +49,7 @@ export const getAll = async (filter: { userId:string, completed:string, isActive
       return res.rows
     })
     .catch((e) => {
-      console.log(e)
-      return [] as Item[][]
+      throw new Error(e.message)
     })
   return data
 }
@@ -60,6 +60,9 @@ export const getOne = async (id: string): Promise<Item[]> => {
   const item: Item[] = await query(getQuery, [id])
   .then((res) => {
     return res.rows[0]
+  })
+  .catch((e) => {
+    throw new Error(e.message)
   })
   return item
 }

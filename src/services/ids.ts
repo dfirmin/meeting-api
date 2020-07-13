@@ -13,8 +13,7 @@ export const create = async (props: Item): Promise<Item[]>=> {
       return res.rows[0]
     })
     .catch(((e) => {
-      console.error(e.stack)
-      return [] as Item[]
+      throw new Error(e)
     }))
   return item
 }
@@ -27,6 +26,6 @@ export const update = async (props: Item) => {
   let updateValues = Object.values(props)
   await query(updateQuery, updateValues)
     .catch((e) => {
-      console.log(e)
+      throw new Error(e)
     })
 }
