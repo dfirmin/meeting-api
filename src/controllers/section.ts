@@ -15,7 +15,7 @@ export const getSections: RequestHandler = async (req, res, next) => {
     return res.status(200).json(seriesSections)
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }
 
@@ -27,7 +27,7 @@ export const putSection: RequestHandler = async (req, res, next) => {
     return res.sendStatus(200).send(`Meeting modified with ID: ${section.id}`)
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
   
 }

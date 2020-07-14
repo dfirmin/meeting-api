@@ -29,10 +29,12 @@ export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
         sectionOccurrences
       })
     }
-    
+    else {
+      return next(createError(404, `No meeting occurrence with ID ${meetingOccurrenceId} was found`))
+    } 
   }
   catch(e) {
-    return next(createError())
+    return next(createError(500, e.message))
   }
 }
 
@@ -52,9 +54,8 @@ export const getMeetingOccurrences: RequestHandler = async (req, res, next) => {
     return res.status(200).json(meetingOccurrences)
   }
   catch(e){
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
-  
 }
 
 export const putMeetingOccurrence: RequestHandler = async (req, res, next) => {
@@ -66,6 +67,6 @@ export const putMeetingOccurrence: RequestHandler = async (req, res, next) => {
     return res.status(200).send(`Meeting modified with ID: ${meetingOccurrence.id}`)
   }
   catch(e){
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }

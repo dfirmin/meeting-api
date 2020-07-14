@@ -17,7 +17,7 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
     res.status(200).json(actionItems)
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }
 
@@ -28,7 +28,7 @@ export const postActionItems: RequestHandler = async (req, res, next) => {
     res.status(201).json({ id: actionItemId })
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }
 
@@ -39,7 +39,7 @@ export const putActionItem: RequestHandler = async (req, res, next) => {
     res.sendStatus(200).send(`Item modified with ID: ${actionItem.id}`)
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }
 

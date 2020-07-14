@@ -13,7 +13,7 @@ export const postIds: RequestHandler = async (req, res, next) => {
     res.status(201).json({ id: IdsId })
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }
 
@@ -24,6 +24,6 @@ export const putIds: RequestHandler = async (req, res, next) => {
     res.sendStatus(200).send(`Item modified with ID: ${ids.id}`)
   }
   catch(e) {
-    return next(createError(e))
+    return next(createError(500, e.message))
   }
 }
