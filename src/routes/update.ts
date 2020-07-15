@@ -1,9 +1,8 @@
 import { Router } from 'express'
-import { createUpdate, updateUpdate } from '../controllers/update'
+import { postUpdate, putUpdate } from '../controllers/update'
 
 const router = Router()
 
-router.route('/').post(createUpdate)
-router.route('/:id').put(updateUpdate)
+router.route('/').post(postUpdate).put(putUpdate)
 
 export default router

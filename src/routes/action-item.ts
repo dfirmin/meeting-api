@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { getActionItem, getActionItems, createActionItem, updateActionItem } from '../controllers/action-item'
+import { getActionItem, getActionItems, postActionItems, putActionItem } from '../controllers/action-item'
 
 const router = Router()
 
-router.route('/').get(getActionItems).post(createActionItem)
-router.route('/:id').get(getActionItem).put(updateActionItem)
+router.route('/').get(getActionItems).post(postActionItems).put(putActionItem)
+router.route('/:id').get(getActionItem)
 
 export default router

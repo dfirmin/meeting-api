@@ -1,9 +1,8 @@
 import { Router } from 'express'
-import { getSections, updateSection } from '../controllers/section'
+import { getSections, putSection } from '../controllers/section'
 
 const router = Router()
 
-router.route('/').get(getSections)
-router.route('/:id').put(updateSection)
+router.route('/').get(getSections).put(putSection)
 
 export default router
