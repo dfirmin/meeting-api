@@ -1,7 +1,20 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
+import * as yup from 'yup'
 import { getAll, update } from '../services/section'
 import Section from '../models/section'
+
+const sectionSchema: yup.ObjectSchema<Section> = yup.object({
+  id: yup
+    .string()
+    .defined(),
+  name: yup
+    .string()
+    .defined(),
+  timeAllocated: yup
+    .number()
+    .defined()
+}).defined();
 
 export const getSections: RequestHandler = async (req, res, next) => {
   // TODO - Given that we have a seriesId, we should attempt to fetch all sections for that series from the database
@@ -21,7 +34,17 @@ export const getSections: RequestHandler = async (req, res, next) => {
 
 export const putSection: RequestHandler = async (req, res, next) => {
   const section: Section = req.body
-  // TODO - Given the sectionId, update the section in the database with that id
+
+  if(!section.id || section.id === '0'){
+    next(createError(400, 'Missing id'))
+  }
+  try {
+    await sectionSchema.validate(section, {abortEarly: false})
+  }
+  catch(e) {
+    console.log(e)
+    return next(createError(400, e.message))
+  }
   try {
     await update(section)
     return res.sendStatus(200).send(`Meeting modified with ID: ${section.id}`)
