@@ -1,7 +1,7 @@
 export default interface Item {
   id: string;
   description: string;
-  priority: number;
+  priority?: number;
   dateCompleted: Date | null;
   userId: number;
   meetingSeriesId: number;
