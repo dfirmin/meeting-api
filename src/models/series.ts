@@ -1,10 +1,8 @@
 interface Series {
-  id: string
-  teamId: string
-  seriesId: string
-  sectionId: string
-  name: string
+  adminUserId: string
   timeAllocated: number
+  startDate: string
+  teamId: string
 }
 
 export default Series
