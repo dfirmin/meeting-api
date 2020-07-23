@@ -5,8 +5,8 @@ import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
 import MeetingOccurrence from '../models/meeting-occurrence'
-import { getOne, getAll as getAllMeetingOccurrences, update } from '../services/meeting-occurrence'
 import SectionOccurrence from '../models/section-occurrence';
+import { getOne, getAll as getAllMeetingOccurrences, update } from '../services/meeting-occurrence'
 import { getAll as getAllSectionOccurrences }  from '../services/section-occurrence';
 
 const meetingOccurrenceSchema: yup.ObjectSchema<MeetingOccurrence> = yup.object({
@@ -16,29 +16,26 @@ const meetingOccurrenceSchema: yup.ObjectSchema<MeetingOccurrence> = yup.object(
   date: yup
     .date()
     .defined(),
-  timeSpent: yup
+  time_spent: yup
     .number()
     .defined(),
-  meetingSeriesId: yup
+  meeting_series_id: yup
     .string()
     .defined()
 }).defined();
 
 export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
-  const meetingOccurrenceId: string = req.params.id
+  
   // TODO - get meeting occurrence as well as section occurrences for a given meetingOccurrenceId
   // const dbErr = false
   // if (dbErr) {
   //   return next(createError(404, `No meeting occurrence with ID ${meetingOccurrenceId} was found`))
   // }
   try {
-    const meetingOccurrence: MeetingOccurrence[] = await getOne(meetingOccurrenceId)
-    if(meetingOccurrence && meetingOccurrence.length > 0){
-      const filter = {
-        seriesId: meetingOccurrence[0].meetingSeriesId,
-        date: meetingOccurrence[0].date
-      }
-      const sectionOccurrences: SectionOccurrence[][] | null= await getAllSectionOccurrences(filter)
+    const meetingOccurrenceId: string = req.params.id
+    const meetingOccurrence: MeetingOccurrence = await getOne(meetingOccurrenceId)
+    if(meetingOccurrence){
+      const sectionOccurrences: SectionOccurrence[] = await getAllSectionOccurrences(meetingOccurrenceId)
       return res.status(200).json({
         meetingOccurrence,
         sectionOccurrences
@@ -65,7 +62,7 @@ export const getMeetingOccurrences: RequestHandler = async (req, res, next) => {
     return next(createError(400, 'Missing teamId in querystring'))
   }
   try{
-    const meetingOccurrences: MeetingOccurrence[][] = await getAllMeetingOccurrences(teamId)
+    const meetingOccurrences: MeetingOccurrence[]  = await getAllMeetingOccurrences(teamId)
     return res.status(200).json(meetingOccurrences)
   }
   catch(e){

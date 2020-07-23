@@ -1,5 +1,6 @@
 export default interface Section {
   id: string
   name: string
-  timeAllocated: number
+  time_allocated: number
+  section_type_id: string
 }

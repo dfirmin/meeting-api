@@ -17,36 +17,36 @@ const itemSchema: yup.ObjectSchema<Item> = yup.object({
   priority: yup
     .number()
     .defined(),
-  dateCompleted: yup
+  date_completed: yup
     .date()
     .nullable()
     .defined(),
-  userId: yup
+  user_id: yup
     .number()
     .defined(),
-  meetingSeriesId: yup
+  section_id: yup
     .number()
     .defined(),
-  sectionId: yup
-    .number()
-    .defined(),
-  dateArchived: yup
+  date_archived: yup
     .date()
     .nullable()
     .defined(),
-  isActive: yup
+  is_active: yup
     .bool()
     .defined()
 }).defined();
 
 export const getActionItems: RequestHandler = async (req, res, next) => {
+  if(!req.query.userId){
+    return next(createError(400, 'Missing userId'))
+  }
   const filter = {
     userId: req.query.userId as string,
-    completed: req.query.completed as string,
-    isActive: req.query.isActive as string,
+    completed: req.query.completed ? req.query.completed as string : 'false',
+    isActive: req.query.isActive ? req.query.isActive as string : 'true',
   }
   try {
-    const actionItems: Item[][] = await getAll(filter)
+    const actionItems: Item[] = await getAll(filter)
     res.status(200).json(actionItems)
   }
   catch(e) {
@@ -65,7 +65,7 @@ export const postActionItems: RequestHandler = async (req, res, next) => {
     return next(createError(400, e.message))
   }
   try {
-    const actionItemId: Item[] | void = await create(actionItems)
+    const actionItemId: Item = await create(actionItems)
     res.status(201).json({ id: actionItemId })
   }
   catch(e) {
@@ -83,7 +83,6 @@ export const putActionItem: RequestHandler = async (req, res, next) => {
     await itemSchema.validate(actionItem, {abortEarly: false})
   }
   catch(e) {
-    console.log(e)
     return next(createError(400, e.message))
   }
   try {

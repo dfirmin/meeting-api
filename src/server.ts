@@ -4,7 +4,7 @@ import createError from 'http-errors'
 import morgan from 'morgan'
 import cors from 'cors'
 import routes from './routes/index'
-import winston from './middleware/winston'
+import winston, { stream } from './middleware/winston'
 
 //To Dos:
 //yup - request validation
@@ -17,7 +17,7 @@ app.use(cors())
 app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(morgan('combined', { stream: winston.stream }))
+app.use(morgan('combined', { stream }))
 
 app.get('/', (req, res) => res.send('Server running!'))
 
@@ -29,7 +29,7 @@ app.use(function (req, res, next) {
   next(createError(404))
 })
 
-const errorHandler: ErrorRequestHandler = function (err, req, res) {
+const errorHandler: ErrorRequestHandler =  (err, req, res) => {
   //include winston logging
   winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
   res.send(`${err.status} - ${err.message}`)
