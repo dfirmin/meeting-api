@@ -27,10 +27,6 @@ const itemSchema: yup.ObjectSchema<Item> = yup.object({
   section_id: yup
     .number()
     .defined(),
-  date_archived: yup
-    .date()
-    .nullable()
-    .defined(),
   is_active: yup
     .bool()
     .defined()
