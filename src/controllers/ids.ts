@@ -16,24 +16,17 @@ const itemSchema: yup.ObjectSchema<Item> = yup.object({
   priority: yup
     .number()
     .defined(),
-  dateCompleted: yup
+  date_completed: yup
     .date()
     .nullable()
     .defined(),
-  userId: yup
+  user_id: yup
     .number()
     .defined(),
-  meetingSeriesId: yup
+  section_id: yup
     .number()
     .defined(),
-  sectionId: yup
-    .number()
-    .defined(),
-  dateArchived: yup
-    .date()
-    .nullable()
-    .defined(),
-  isActive: yup
+  is_active: yup
     .bool()
     .defined()
 }).defined();
@@ -49,7 +42,7 @@ export const postIds: RequestHandler = async (req, res, next) => {
     return next(createError(400, e.message))
   }
   try {
-    const IdsId: Item[] = await create(ids)
+    const IdsId: Item = await create(ids)
     res.status(201).json({ id: IdsId })
   }
   catch(e) {

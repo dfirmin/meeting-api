@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
-import { getAll, update } from '../services/section'
+import { getAll as getAllSections, update } from '../services/section'
 import Section from '../models/section'
 
 const sectionSchema: yup.ObjectSchema<Section> = yup.object({
@@ -11,9 +11,12 @@ const sectionSchema: yup.ObjectSchema<Section> = yup.object({
   name: yup
     .string()
     .defined(),
-  timeAllocated: yup
+  time_allocated: yup
     .number()
-    .defined()
+    .defined(),
+  section_type_id: yup
+    .string()
+    .defined(),
 }).defined();
 
 export const getSections: RequestHandler = async (req, res, next) => {
@@ -24,7 +27,7 @@ export const getSections: RequestHandler = async (req, res, next) => {
     return next(createError(400, 'Missing seriesId in querystring'))
   }
   try {
-    const seriesSections: Section[][] = await getAll(seriesId)
+    const seriesSections: Section[] = await getAllSections(seriesId)
     return res.status(200).json(seriesSections)
   }
   catch(e) {

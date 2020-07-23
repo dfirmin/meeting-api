@@ -2,10 +2,8 @@ export default interface Item {
   id: string;
   description: string;
   priority?: number;
-  dateCompleted: Date | null;
-  userId: number;
-  meetingSeriesId: number;
-  sectionId: number;
-  dateArchived: Date | null;
-  isActive: boolean;
+  date_completed: Date | null;
+  user_id: number;
+  section_id: number;
+  is_active: boolean;
 }

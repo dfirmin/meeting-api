@@ -1,7 +1,6 @@
 export default interface SectionOccurrence {
   id: string
-  timeSpent?: number
+  time_spent?: number
   date: Date
-  sectionId: string
-
+  section_id: string
 }

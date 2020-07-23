@@ -1,7 +1,7 @@
 export default interface MeetingOccurrence {
   id: string
   date: Date
-  timeSpent?: number
-  meetingSeriesId: string
+  time_spent?: number
+  meeting_series_id: string
 }
 
