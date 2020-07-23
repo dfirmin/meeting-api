@@ -1,5 +1,5 @@
-import { Router } from 'express'
+// import { Router } from 'express'
 
-const router = Router()
+// const router = Router()
 
 // POST /login (Returns User Object)

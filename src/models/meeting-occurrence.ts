@@ -4,4 +4,3 @@ export default interface MeetingOccurrence {
   time_spent?: number
   meeting_series_id: string
 }
-

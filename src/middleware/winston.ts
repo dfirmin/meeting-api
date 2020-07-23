@@ -1,4 +1,4 @@
-import {createLogger, transports} from 'winston'
+import { createLogger, transports } from 'winston'
 
 //define the custom settings for each transport (file, console)
 const options = {
@@ -21,20 +21,17 @@ const options = {
 
 //instantiate a new Winston Logger with the settings defined above
 const logger = createLogger({
-  transports:[
-    new transports.File(options.file),
-    new transports.Console(options.console)
-  ],
+  transports: [new transports.File(options.file), new transports.Console(options.console)],
   exitOnError: false, //do not exit on handled exceptions
 })
 
 //create a stream object with a 'write' function that will be used by `morgan`
 export const stream = {
-  write: function(message: string) {
+  write: function (message: string): void {
     //output will be picked up by both transports (file and console)
     logger.log({
       level: 'info',
-      message
+      message,
     })
   },
 }

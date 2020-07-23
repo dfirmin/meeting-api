@@ -1,4 +1,4 @@
-import SectionOccurrence from '../models/section-occurrence';
+import SectionOccurrence from '../models/section-occurrence'
 import { query } from '../db/index'
 
 // export const getAll = async (filter: { seriesId: string, date: Date }): Promise<SectionOccurrence[][]> => {
@@ -22,22 +22,21 @@ import { query } from '../db/index'
 
 export const getAll = async (meetingOccurrenceId: string): Promise<SectionOccurrence[]> => {
   try {
-    const getQuery: string = `SELECT section_occurrences.id, section_id, date, created_at, updated_at, time_spent 
+    const getQuery = `SELECT section_occurrences.id, section_id, date, created_at, updated_at, time_spent
                     FROM section_occurrences
-                    WHERE section_id 
+                    WHERE section_id
                     IN (
-                      SELECT sections.id 
-                      FROM sections 
+                      SELECT sections.id
+                      FROM sections
                       WHERE meeting_series_id = (
-                        SELECT meeting_series.id 
-                        FROM meeting_series 
+                        SELECT meeting_series.id
+                        FROM meeting_series
                         INNER JOIN meeting_occurrences
                         ON meeting_occurrences.meeting_series_id = meeting_series.id
                         WHERE meeting_occurrences.id = $1))`
     const data = await query(getQuery, [meetingOccurrenceId])
     return data.rows
-  }
-  catch(e) {
+  } catch (e) {
     throw new Error(e)
   }
 }

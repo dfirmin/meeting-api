@@ -1,28 +1,24 @@
 import Section from '../models/section'
-import { query} from '../db/index'
+import { query } from '../db/index'
 
-
-export const update = async (props: Section) => {
+export const update = async (props: Section): Promise<void> => {
   try {
-    const updateQuery: string = `UPDATE sections
+    const updateQuery = `UPDATE sections
       SET name = $2, priority = $3, time_allocated = $4, meeting_series_id = $5, order = $6
       WHERE id = $1;`
-    let updateValues = Object.values(props)
+    const updateValues = Object.values(props)
     await query(updateQuery, updateValues)
-  }
-  catch(e) {
+  } catch (e) {
     throw new Error(e)
   }
 }
 
 export const getAll = async (meetingSeriesId: string): Promise<Section[]> => {
   try {
-    const getQuery: string = `SElECT * FROM sections WHERE meeting_series_id = $1`
+    const getQuery = `SElECT * FROM sections WHERE meeting_series_id = $1`
     const data = await query(getQuery, [meetingSeriesId])
     return data.rows
-  }
-  catch(e) {
+  } catch (e) {
     throw new Error(e)
   }
-  
 }
