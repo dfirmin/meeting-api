@@ -5,27 +5,20 @@ import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
 import MeetingOccurrence from '../models/meeting-occurrence'
-import SectionOccurrence from '../models/section-occurrence';
+import SectionOccurrence from '../models/section-occurrence'
 import { getOne, getAll as getAllMeetingOccurrences, update } from '../services/meeting-occurrence'
-import { getAll as getAllSectionOccurrences }  from '../services/section-occurrence';
+import { getAll as getAllSectionOccurrences } from '../services/section-occurrence'
 
-const meetingOccurrenceSchema: yup.ObjectSchema<MeetingOccurrence> = yup.object({
-  id: yup
-    .string()
-    .defined(),
-  date: yup
-    .date()
-    .defined(),
-  time_spent: yup
-    .number()
-    .defined(),
-  meeting_series_id: yup
-    .string()
-    .defined()
-}).defined();
+const meetingOccurrenceSchema: yup.ObjectSchema<MeetingOccurrence> = yup
+  .object({
+    id: yup.string().defined(),
+    date: yup.date().defined(),
+    time_spent: yup.number().defined(),
+    meeting_series_id: yup.string().defined(),
+  })
+  .defined()
 
 export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
-  
   // TODO - get meeting occurrence as well as section occurrences for a given meetingOccurrenceId
   // const dbErr = false
   // if (dbErr) {
@@ -34,18 +27,16 @@ export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
   try {
     const meetingOccurrenceId: string = req.params.id
     const meetingOccurrence: MeetingOccurrence = await getOne(meetingOccurrenceId)
-    if(meetingOccurrence){
+    if (meetingOccurrence) {
       const sectionOccurrences: SectionOccurrence[] = await getAllSectionOccurrences(meetingOccurrenceId)
       return res.status(200).json({
         meetingOccurrence,
-        sectionOccurrences
+        sectionOccurrences,
       })
-    }
-    else {
+    } else {
       return next(createError(404, `No meeting occurrence with ID ${meetingOccurrenceId} was found`))
-    } 
-  }
-  catch(e) {
+    }
+  } catch (e) {
     return next(createError(500, e.message))
   }
 }
@@ -61,11 +52,10 @@ export const getMeetingOccurrences: RequestHandler = async (req, res, next) => {
   if (!teamId) {
     return next(createError(400, 'Missing teamId in querystring'))
   }
-  try{
-    const meetingOccurrences: MeetingOccurrence[]  = await getAllMeetingOccurrences(teamId)
+  try {
+    const meetingOccurrences: MeetingOccurrence[] = await getAllMeetingOccurrences(teamId)
     return res.status(200).json(meetingOccurrences)
-  }
-  catch(e){
+  } catch (e) {
     return next(createError(500, e.message))
   }
 }
@@ -74,21 +64,19 @@ export const putMeetingOccurrence: RequestHandler = async (req, res, next) => {
   // TODO - Given the sectionId, update the section with a timeSpent in the database with that id
   const meetingOccurrence: MeetingOccurrence = req.body
 
-  if(!meetingOccurrence.id || meetingOccurrence.id === '0'){
+  if (!meetingOccurrence.id || meetingOccurrence.id === '0') {
     next(createError(400, 'Missing id'))
   }
   try {
-    await meetingOccurrenceSchema.validate(meetingOccurrence, {abortEarly: false})
-  }
-  catch(e) {
+    await meetingOccurrenceSchema.validate(meetingOccurrence, { abortEarly: false })
+  } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
-  try{
+  try {
     await update(meetingOccurrence)
     return res.status(200).send(`Meeting modified with ID: ${meetingOccurrence.id}`)
-  }
-  catch(e){
+  } catch (e) {
     return next(createError(500, e.message))
   }
 }
