@@ -15,13 +15,27 @@ export const create = async (props: Item): Promise<Item> => {
   }
 }
 
-export const update = async (props: Item) => {
+export const update = async (props: Item): Promise<void> => {
   try {
     const updateQuery = `UPDATE items
       SET description = $2, priority = $3, date_completed = $4, user_id = $5, section_id = $6, date_archived = $7, is_active = $8
       WHERE id = $1;`
     const updateValues = Object.values(props)
     await query(updateQuery, updateValues)
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+export const remove = async (id: string): Promise<void> => {
+  try {
+    const deleteQuery = `DELETE
+    FROM public.items
+    INNER JOIN sections
+    ON sections.id = items.section_id
+    WHERE id = $1 AND section_type_id = 1;`
+    const deleteValue = id
+    await query(deleteQuery, [deleteValue])
   } catch (e) {
     throw new Error(e)
   }
