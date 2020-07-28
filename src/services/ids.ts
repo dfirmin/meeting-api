@@ -3,7 +3,7 @@ import { query } from '../db/index'
 
 export const create = async (props: Item): Promise<Item> => {
   try {
-    const createQuery = `INSERT INTO items
+    const createQuery = `INSERT INTO items 
       (description, priority, date_completed, user_id, section_id, date_archived, is_active)
       VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id`
     delete props.id
@@ -22,6 +22,20 @@ export const update = async (props: Item): Promise<void> => {
       WHERE id = $1;`
     const updateValues = Object.values(props)
     await query(updateQuery, updateValues)
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+export const remove = async (id: string): Promise<void> => {
+  try {
+    const deleteQuery = `DELETE
+    FROM public.items
+    INNER JOIN sections
+    ON sections.id = items.section_id
+    WHERE id = $1 AND section_type_id = 3;`
+    const deleteValue = id
+    await query(deleteQuery, [deleteValue])
   } catch (e) {
     throw new Error(e)
   }

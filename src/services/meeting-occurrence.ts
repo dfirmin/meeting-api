@@ -15,8 +15,8 @@ export const update = async (props: MeetingOccurrence): Promise<void> => {
 
 export const getAll = async (teamId: string): Promise<MeetingOccurrence[]> => {
   try {
-    const getQuery = `SElECT * FROM meeting_occurrences
-      INNER JOIN meeting_series ON meeting_series.id = meeting_occurrences.meeting_series_id
+    const getQuery = `SElECT * FROM meeting_occurrences 
+      INNER JOIN meeting_series ON meeting_series.id = meeting_occurrences.meeting_series_id 
       WHERE team_id  =  $1`
     const data = await query(getQuery, [teamId])
     return data.rows

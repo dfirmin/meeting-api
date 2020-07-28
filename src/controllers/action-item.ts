@@ -4,7 +4,7 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
-import { update, getAll, create } from '../services/action-item'
+import { update, getAll, create, remove } from '../services/action-item'
 import Item from '../models/item'
 
 const itemSchema: yup.ObjectSchema<Item> = yup
@@ -67,6 +67,19 @@ export const putActionItem: RequestHandler = async (req, res, next) => {
   try {
     await update(actionItem)
     res.sendStatus(200).send(`Item modified with ID: ${actionItem.id}`)
+  } catch (e) {
+    return next(createError(500, e.message))
+  }
+}
+
+export const deleteActionItem: RequestHandler = async (req, res, next) => {
+  if (!req.params.id) {
+    return next(createError(400, 'Missing id'))
+  }
+  try {
+    const actionItemId = req.params.id
+    await remove(actionItemId)
+    res.sendStatus(200).send(`Item removed with ID: ${actionItemId}`)
   } catch (e) {
     return next(createError(500, e.message))
   }

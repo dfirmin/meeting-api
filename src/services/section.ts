@@ -1,7 +1,7 @@
 import Section from '../models/section'
 import { query } from '../db/index'
 
-export const update = async (props: Section): Promise<void> => {
+export const update = async (props: Section) => {
   try {
     const updateQuery = `UPDATE sections
       SET name = $2, priority = $3, time_allocated = $4, meeting_series_id = $5, order = $6

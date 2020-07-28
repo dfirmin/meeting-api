@@ -22,7 +22,7 @@ import { query } from '../db/index'
 
 export const getAll = async (meetingOccurrenceId: string): Promise<SectionOccurrence[]> => {
   try {
-    const getQuery = `SELECT section_occurrences.id, section_id, date, created_at, updated_at, time_spent
+    const getQuery = `SELECT section_occurrences.id, section_id, date, created_at, updated_at, time_spent 
                     FROM section_occurrences
                     WHERE section_id
                     IN (
