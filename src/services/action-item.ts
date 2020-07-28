@@ -29,7 +29,10 @@ export const update = async (props: Item): Promise<void> => {
 
 export const getAll = async (filter: { userId: string; completed: string; isActive: string }): Promise<Item[]> => {
   try {
-    let getQuery = 'SElECT * FROM items WHERE user_id = $1 AND section_id = 2'
+    let getQuery = `SElECT * FROM items 
+    INNER JOIN sections
+    ON sections.id = items.section_id
+    WHERE user_id = $1 AND section_type_id = 2`
     const getValues: string[] = []
     getValues.push(filter.userId)
 
