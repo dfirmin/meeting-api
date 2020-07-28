@@ -3,6 +3,7 @@
 // PUT /series/:seriesId/sections/:sectionId (Update the section - return 200 on success)
 // * POST /series (Return the Created Series Object - including sections)
 // * PUT /series/:id (Updates the record, returns 200 on success)
+// get single series
 import { update, create } from '../services/series'
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
@@ -11,10 +12,11 @@ import * as yup from 'yup'
 
 const seriesSchema: yup.ObjectSchema<Series> = yup
   .object({
-    adminUserId: yup.string().defined(),
-    timeAllocated: yup.number().defined(),
-    startDate: yup.string().defined(),
-    teamId: yup.string().defined(),
+    id: yup.string().defined(),
+    admin_user_id: yup.string().defined(),
+    time_allocated: yup.number().defined(),
+    start_date: yup.string().defined(),
+    team_id: yup.string().defined(),
   })
   .defined()
 
@@ -27,7 +29,7 @@ export const createMeetingSeries: RequestHandler = async (req, res, next) => {
     return next(createError(400, e.message))
   }
   try {
-    const meetingSeriesId: Series[] | void = await create(meetingSeries)
+    const meetingSeriesId: string = await create(meetingSeries)
     res.status(201).json({ id: meetingSeriesId })
   } catch (e) {
     return next(createError(500, e.message))
@@ -36,8 +38,8 @@ export const createMeetingSeries: RequestHandler = async (req, res, next) => {
 
 export const updateMeetingSeries: RequestHandler = async (req, res, next) => {
   const meetingSeries: Series = req.body
-  if (!meetingSeries.adminUserId || meetingSeries.adminUserId === '0') {
-    next(createError(400, 'Missing admin user id'))
+  if (!meetingSeries.id || meetingSeries.id === '0') {
+    next(createError(400, 'Missing user ID'))
   }
   try {
     await seriesSchema.validate(meetingSeries, { abortEarly: false })
@@ -47,7 +49,7 @@ export const updateMeetingSeries: RequestHandler = async (req, res, next) => {
   }
   try {
     await update(meetingSeries)
-    res.sendStatus(200).send(`Item modified with admin user ID: ${meetingSeries.adminUserId}`)
+    res.sendStatus(200).send(`Item modified with user ID: ${meetingSeries.id}`)
   } catch (e) {
     return next(createError(500, e.message))
   }
