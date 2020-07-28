@@ -24,13 +24,13 @@ export const getAll = async (meetingOccurrenceId: string): Promise<SectionOccurr
   try {
     const getQuery = `SELECT section_occurrences.id, section_id, date, created_at, updated_at, time_spent 
                     FROM section_occurrences
-                    WHERE section_id 
+                    WHERE section_id
                     IN (
-                      SELECT sections.id 
-                      FROM sections 
+                      SELECT sections.id
+                      FROM sections
                       WHERE meeting_series_id = (
-                        SELECT meeting_series.id 
-                        FROM meeting_series 
+                        SELECT meeting_series.id
+                        FROM meeting_series
                         INNER JOIN meeting_occurrences
                         ON meeting_occurrences.meeting_series_id = meeting_series.id
                         WHERE meeting_occurrences.id = $1))`

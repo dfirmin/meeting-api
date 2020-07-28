@@ -29,7 +29,7 @@ app.use(function (req, res, next) {
   next(createError(404))
 })
 
-const errorHandler: ErrorRequestHandler =  (err, req, res) => {
+const errorHandler: ErrorRequestHandler = (err, req, res) => {
   //include winston logging
   winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
   res.send(`${err.status} - ${err.message}`)
