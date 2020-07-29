@@ -6,4 +6,9 @@ interface Series {
   team_id: string
 }
 
+interface SeriesRequest {
+  timeAllocated: number
+  startDate: Date
+}
+
 export default Series
