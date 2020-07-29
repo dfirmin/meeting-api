@@ -1,7 +1,7 @@
 import MeetingOccurrence from '../models/meeting-occurrence'
 import { query } from '../db/index'
 
-export const update = async (props: MeetingOccurrence) => {
+export const update = async (props: MeetingOccurrence): Promise<void> => {
   try {
     const updateQuery = `UPDATE meeting_occurrences
       SET date = $2, time_spent = $3, meeting_id = $4
