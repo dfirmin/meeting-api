@@ -29,11 +29,11 @@ export const update = async (props: Item): Promise<void> => {
 
 export const remove = async (id: string): Promise<void> => {
   try {
-    const deleteQuery = `DELETE
-    FROM public.items
-    INNER JOIN sections
-    ON sections.id = items.section_id
-    WHERE id = $1 AND section_type_id = 3;`
+    const deleteQuery = `
+    DELETE
+    FROM items
+    USING sections
+    WHERE items.id = $1 AND sections.section_type_id = 3`
     const deleteValue = id
     await query(deleteQuery, [deleteValue])
   } catch (e) {
