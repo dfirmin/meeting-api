@@ -4,33 +4,44 @@
 // * POST /series (Return the Created Series Object - including sections)
 // * PUT /series/:id (Updates the record, returns 200 on success)
 // get single series
-import { update, create } from '../services/series'
+import { update, create as createSeries } from '../services/series'
+import { create as createSection } from '../services/section'
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import Series from '../models/series'
 import * as yup from 'yup'
+import Section from '../models/section'
 
-const seriesSchema: yup.ObjectSchema<Series> = yup
-  .object({
-    id: yup.string().defined(),
-    admin_user_id: yup.string().defined(),
-    time_allocated: yup.number().defined(),
-    start_date: yup.string().defined(),
-    team_id: yup.string().defined(),
+const seriesSchema = yup
+  .object()
+  .shape({
+    series: yup.object({
+      id: yup.string().defined(),
+      user_id: yup.string().defined(),
+      time_allocated: yup.number().defined(),
+      start_date: yup.string().defined(),
+      team_id: yup.string().defined(),
+    }),
+    sections: yup.array(),
   })
   .defined()
 
 export const createMeetingSeries: RequestHandler = async (req, res, next) => {
-  const meetingSeries: Series = req.body
   try {
-    await seriesSchema.validate(meetingSeries, { abortEarly: false })
+    await seriesSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
+  const meetingSeries: Series = req.body.series
+  const meetingSections: Section[] = req.body.sections
   try {
-    const meetingSeriesId: string = await create(meetingSeries)
-    res.status(201).json({ id: meetingSeriesId })
+    const meetingSeriesId: string = await createSeries(meetingSeries)
+    meetingSections.map(async (section) => {
+      section.meeting_series_id = meetingSeriesId
+      await createSection(section)
+    })
+    await res.status(200).json(meetingSeriesId)
   } catch (e) {
     return next(createError(500, e.message))
   }
