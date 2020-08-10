@@ -17,7 +17,7 @@ export const create = async (props: Item): Promise<Item> => {
 
 export const getAll = async (meetingOccurrenceId: string): Promise<Item[]> => {
   try {
-    const getQuery = `SELECT * FROM items
+    const getQuery = `SELECT items.id, items.description, items.priority, items.date_completed, items.user_id, items.section_id, items.is_active FROM items
     INNER JOIN sections
     ON sections.id = items.section_id
     INNER JOIN meeting_series
@@ -26,7 +26,7 @@ export const getAll = async (meetingOccurrenceId: string): Promise<Item[]> => {
     ON meeting_occurrences.meeting_series_id = meeting_series.id
     WHERE sections.section_type_id = 1 AND meeting_occurrences.id = $1`
     const data = await query(getQuery, [meetingOccurrenceId])
-    return data.rows[0]
+    return data.rows
   } catch (e) {
     throw new Error(e.message)
   }

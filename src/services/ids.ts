@@ -17,7 +17,7 @@ export const create = async (props: Item): Promise<Item> => {
 
 export const getAll = async (meetingOccurrenceId: string): Promise<Item[]> => {
   try {
-    const getQuery = `SELECT * FROM items
+    const getQuery = `SELECT items.id, items.description, items.priority, items.date_completed, items.user_id, items.section_id, items.is_active FROM items
     INNER JOIN sections
     ON sections.id = items.section_id
     INNER JOIN meeting_series
