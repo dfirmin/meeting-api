@@ -6,6 +6,7 @@
 // get single series
 import { update, create as createSeries } from '../services/series'
 import { create as createSection } from '../services/section'
+import { create as createMeetingOccurrence } from '../services/meeting-occurrence'
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import Series from '../models/series'
@@ -41,7 +42,8 @@ export const createMeetingSeries: RequestHandler = async (req, res, next) => {
       section.meeting_series_id = meetingSeriesId
       await createSection(section)
     })
-    await res.status(200).json(meetingSeriesId)
+    const meetingOccurrenceId: string = await createMeetingOccurrence(meetingSeriesId)
+    await res.status(200).json(meetingOccurrenceId)
   } catch (e) {
     return next(createError(500, e.message))
   }
