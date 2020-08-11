@@ -19,11 +19,6 @@ const meetingOccurrenceSchema: yup.ObjectSchema<MeetingOccurrence> = yup
   .defined()
 
 export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
-  // TODO - get meeting occurrence as well as section occurrences for a given meetingOccurrenceId
-  // const dbErr = false
-  // if (dbErr) {
-  //   return next(createError(404, `No meeting occurrence with ID ${meetingOccurrenceId} was found`))
-  // }
   try {
     const meetingOccurrenceId: string = req.params.id
     const meetingOccurrence: MeetingOccurrence = await getOne(meetingOccurrenceId)
@@ -42,12 +37,6 @@ export const getMeetingOccurrence: RequestHandler = async (req, res, next) => {
 }
 
 export const getMeetingOccurrences: RequestHandler = async (req, res, next) => {
-  // if (teamId) {
-  //   // TODO - Given that we have a teamId, we should attempt to fetch the most recent N occurrences from the database
-  //   // TODO - If no records are found (meaning the teamId does not exist), how should we handle this?
-  //   console.log(`Fetching meeting occurences for team with ID ${teamId}`)
-  // }
-  // TODO - how should we handle when no teamId is in the querystring?
   const teamId: string = req.query.teamId as string
   if (!teamId) {
     return next(createError(400, 'Missing teamId in querystring'))
