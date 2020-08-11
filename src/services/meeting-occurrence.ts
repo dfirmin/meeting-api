@@ -5,7 +5,7 @@ export const create = async (meetingSeriesId: string): Promise<string> => {
   try {
     const createQuery = `INSERT INTO meeting_occurrences (meeting_series_id) VALUES($1) RETURNING id`
     const data = await query(createQuery, [meetingSeriesId])
-    return data.rows[0]
+    return data.rows[0].id
   } catch (e) {
     throw new Error(e.message)
   }

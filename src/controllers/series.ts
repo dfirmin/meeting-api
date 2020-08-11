@@ -1,9 +1,3 @@
-// GET /series/:teamId/occurrences (Return Array of Occurrences)
-// GET /series/:seriesId/sections (Returns Array of Sections - time allocated, name, items)
-// PUT /series/:seriesId/sections/:sectionId (Update the section - return 200 on success)
-// * POST /series (Return the Created Series Object - including sections)
-// * PUT /series/:id (Updates the record, returns 200 on success)
-// get single series
 import { update, create as createSeries } from '../services/series'
 import { create as createSection } from '../services/section'
 import { create as createMeetingOccurrence } from '../services/meeting-occurrence'
@@ -13,17 +7,38 @@ import Series from '../models/series'
 import * as yup from 'yup'
 import Section from '../models/section'
 
+interface SeriesRequest {
+  id: string
+  userId: string
+  timeAllocated: number
+  startDate: string
+  teamId: string
+}
+interface SectionRequest {
+  id: string
+  timeAllocated: number
+  meetingSeriesId: string
+  sectionTypeId: string
+}
+
 const seriesSchema = yup
   .object()
   .shape({
-    series: yup.object({
+    series: yup.object<SeriesRequest>({
       id: yup.string().defined(),
-      user_id: yup.string().defined(),
-      time_allocated: yup.number().defined(),
-      start_date: yup.string().defined(),
-      team_id: yup.string().defined(),
+      userId: yup.string().defined(),
+      timeAllocated: yup.number().defined(),
+      startDate: yup.string().defined(),
+      teamId: yup.string().defined(),
     }),
-    sections: yup.array(),
+    sections: yup.array().of(
+      yup.object<SectionRequest>({
+        id: yup.string().defined(),
+        timeAllocated: yup.number().defined(),
+        meetingSeriesId: yup.string().defined(),
+        sectionTypeId: yup.string().defined(),
+      }),
+    ),
   })
   .defined()
 
@@ -34,13 +49,27 @@ export const createMeetingSeries: RequestHandler = async (req, res, next) => {
     console.log(e)
     return next(createError(400, e.message))
   }
-  const meetingSeries: Series = req.body.series
-  const meetingSections: Section[] = req.body.sections
+
   try {
-    const meetingSeriesId: string = await createSeries(meetingSeries)
-    meetingSections.map(async (section) => {
-      section.meeting_series_id = meetingSeriesId
-      await createSection(section)
+    const incomingMeetingSeries: SeriesRequest = req.body.series
+    const incomingMeetingSections: SectionRequest[] = req.body.sections
+    const newSeries: Series = {
+      id: '0',
+      user_id: incomingMeetingSeries.userId,
+      time_allocated: incomingMeetingSeries.timeAllocated,
+      start_date: incomingMeetingSeries.startDate,
+      team_id: incomingMeetingSeries.teamId,
+    }
+    const meetingSeriesId: string = await createSeries(newSeries)
+
+    incomingMeetingSections.map(async (section: SectionRequest) => {
+      const newSection: Section = {
+        id: '0',
+        time_allocated: section.timeAllocated,
+        meeting_series_id: meetingSeriesId,
+        section_type_id: section.sectionTypeId,
+      }
+      await createSection(newSection)
     })
     const meetingOccurrenceId: string = await createMeetingOccurrence(meetingSeriesId)
     await res.status(200).json(meetingOccurrenceId)
