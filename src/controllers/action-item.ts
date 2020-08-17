@@ -1,10 +1,10 @@
 // GET /action-items?userId=0&complete=false&isActive=true (Return Array of Action Items)
 // POST /action-items (Create an action item - return the ID of the item)
 // PUT /action-items/:id (update an action item - return 200 on success)
-import { RequestHandler } from 'express'
+import e, { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
-import { update, getAll, create, remove } from '../services/action-item'
+import { update, getAllByUser, create, remove, getAll } from '../services/action-item'
 import Item from '../models/item'
 
 const itemSchema: yup.ObjectSchema<Item> = yup
@@ -20,19 +20,28 @@ const itemSchema: yup.ObjectSchema<Item> = yup
   .defined()
 
 export const getActionItems: RequestHandler = async (req, res, next) => {
-  if (!req.query.userId) {
-    return next(createError(400, 'Missing userId'))
-  }
-  const filter = {
-    userId: req.query.userId as string,
-    completed: req.query.completed ? (req.query.completed as string) : 'false',
-    isActive: req.query.isActive ? (req.query.isActive as string) : 'true',
-  }
-  try {
-    const actionItems: Item[] = await getAll(filter)
-    res.status(200).json(actionItems)
-  } catch (e) {
-    return next(createError(500, e.message))
+  if (req.query.userId) {
+    const filter = {
+      userId: req.query.userId as string,
+      completed: req.query.completed ? (req.query.completed as string) : 'false',
+      isActive: req.query.isActive ? (req.query.isActive as string) : 'true',
+    }
+    try {
+      const actionItems: Item[] = await getAllByUser(filter)
+      res.status(200).json(actionItems)
+    } catch (e) {
+      return next(createError(500, e.message))
+    }
+  } else if (req.query.meetingOccurrenceId) {
+    const meetingOccurrenceId = req.query.meetingOccurrenceId as string
+    try {
+      const actionItems: Item[] = await getAll(meetingOccurrenceId)
+      res.status(200).json(actionItems)
+    } catch (e) {
+      return next(createError(500, e.message))
+    }
+  } else {
+    return next(createError(400, 'Missing userId or meetingOccurrenceId'))
   }
 }
 

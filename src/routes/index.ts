@@ -13,7 +13,7 @@ router.use('/ids', idsRoutes)
 router.use('/meeting-occurrences', meetingOccurrenceRoutes)
 router.use('/series', seriesRoutes)
 router.use('/user', userRoutes)
-router.use('/udpates', updateRoutes)
+router.use('/updates', updateRoutes)
 router.use('/sections', sectionRoutes)
 
 export default router
