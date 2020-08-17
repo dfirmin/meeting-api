@@ -3,7 +3,7 @@
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
-import { update, create, remove } from '../services/update'
+import { update, create, remove, getAll } from '../services/update'
 import Item from '../models/item'
 
 const itemSchema: yup.ObjectSchema<Item> = yup
@@ -31,6 +31,19 @@ export const postUpdate: RequestHandler = async (req, res, next) => {
   try {
     const updateId: Item = await create(updateItem)
     res.status(201).json({ id: updateId })
+  } catch (e) {
+    return next(createError(500, e.message))
+  }
+}
+
+export const getUpdates: RequestHandler = async (req, res, next) => {
+  if (!req.query.meetingOccurrenceId) {
+    return next(createError(400, 'Missing meetingOccurrenceId'))
+  }
+  const meetingOccurrenceId = req.query.meetingOccurrenceId as string
+  try {
+    const updateItems: Item[] = await getAll(meetingOccurrenceId)
+    res.status(200).json(updateItems)
   } catch (e) {
     return next(createError(500, e.message))
   }

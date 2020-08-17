@@ -16,12 +16,13 @@ const sectionSchema: yup.ObjectSchema<Section> = yup
 export const getSections: RequestHandler = async (req, res, next) => {
   // TODO - Given that we have a seriesId, we should attempt to fetch all sections for that series from the database
   // TODO - If no records are found (meaining the sectionId does not exist), how should we handle this?
-  const seriesId = req.query.seriesId as string
-  if (!seriesId) {
-    return next(createError(400, 'Missing seriesId in querystring'))
+  const meetingOccurrenceId = req.query.meetingOccurrenceId as string
+  if (!meetingOccurrenceId) {
+    return next(createError(400, 'Missing meetingOccurrenceId in querystring'))
   }
   try {
-    const seriesSections: Section[] = await getAllSections(seriesId)
+    const seriesSections: Section[] = await getAllSections(meetingOccurrenceId)
+    console.log(seriesSections)
     return res.status(200).json(seriesSections)
   } catch (e) {
     return next(createError(500, e.message))

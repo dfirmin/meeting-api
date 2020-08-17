@@ -27,7 +27,11 @@ export const update = async (props: Item): Promise<void> => {
   }
 }
 
-export const getAll = async (filter: { userId: string; completed: string; isActive: string }): Promise<Item[]> => {
+export const getAllByUser = async (filter: {
+  userId: string
+  completed: string
+  isActive: string
+}): Promise<Item[]> => {
   try {
     let getQuery = `SElECT * FROM items 
     INNER JOIN sections
@@ -43,6 +47,24 @@ export const getAll = async (filter: { userId: string; completed: string; isActi
       getQuery += ' AND is_active = false'
     }
     const data = await query(getQuery, getValues)
+    return data.rows
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
+export const getAll = async (meetingOccurrenceId: string): Promise<Item[]> => {
+  try {
+    const getQuery = `SELECT items.id, items.description, items.priority, items.date_completed, items.user_id, items.section_id, items.is_active
+    FROM items
+    INNER JOIN sections
+    ON sections.id = items.section_id
+    INNER JOIN meeting_series
+    ON meeting_series.id = sections.meeting_series_id
+    INNER JOIN meeting_occurrences
+    ON meeting_occurrences.meeting_series_id = meeting_series.id
+    WHERE sections.section_type_id = 2 AND meeting_occurrences.id = $1`
+    const data = await query(getQuery, [meetingOccurrenceId])
     return data.rows
   } catch (e) {
     throw new Error(e.message)
