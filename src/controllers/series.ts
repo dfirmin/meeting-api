@@ -3,23 +3,9 @@ import { create as createSection } from '../services/section'
 import { create as createMeetingOccurrence } from '../services/meeting-occurrence'
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import Series from '../models/series'
+import { Series, SeriesRequest } from '../models/series'
 import * as yup from 'yup'
-import Section from '../models/section'
-
-interface SeriesRequest {
-  id: string
-  userId: string
-  timeAllocated: number
-  startDate: string
-  teamId: string
-}
-interface SectionRequest {
-  id: string
-  timeAllocated: number
-  meetingSeriesId: string
-  sectionTypeId: string
-}
+import { Section, SectionRequest } from '../models/section'
 
 const seriesSchema = yup
   .object()
@@ -42,7 +28,7 @@ const seriesSchema = yup
   })
   .defined()
 
-export const createMeetingSeries: RequestHandler = async (req, res, next) => {
+export const postMeetingSeries: RequestHandler = async (req, res, next) => {
   try {
     await seriesSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
@@ -78,20 +64,28 @@ export const createMeetingSeries: RequestHandler = async (req, res, next) => {
   }
 }
 
-export const updateMeetingSeries: RequestHandler = async (req, res, next) => {
-  const meetingSeries: Series = req.body
-  if (!meetingSeries.id || meetingSeries.id === '0') {
-    next(createError(400, 'Missing user ID'))
-  }
+export const putMeetingSeries: RequestHandler = async (req, res, next) => {
   try {
-    await seriesSchema.validate(meetingSeries, { abortEarly: false })
+    await seriesSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
+
   try {
-    await update(meetingSeries)
-    res.sendStatus(200).send(`Item modified with user ID: ${meetingSeries.id}`)
+    const incomingMeetingSeries: SeriesRequest = req.body
+    if (!incomingMeetingSeries.id || incomingMeetingSeries.id === '0') {
+      next(createError(400, 'Missing user ID'))
+    }
+    const updatedSeries: Series = {
+      id: '0',
+      user_id: incomingMeetingSeries.userId,
+      time_allocated: incomingMeetingSeries.timeAllocated,
+      start_date: incomingMeetingSeries.startDate,
+      team_id: incomingMeetingSeries.teamId,
+    }
+    await update(updatedSeries)
+    res.sendStatus(200).send(`Item modified with user ID: ${updatedSeries.id}`)
   } catch (e) {
     return next(createError(500, e.message))
   }

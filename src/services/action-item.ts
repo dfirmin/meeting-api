@@ -1,15 +1,15 @@
-import Item from '../models/item'
+import { Item } from '../models/item'
 import { query } from '../db/index'
 
 export const create = async (props: Item): Promise<Item> => {
   try {
     const createQuery = `INSERT INTO items 
-      (description, priority, date_completed, user_id, section_id, date_archived, is_active)
-      VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+      (description, priority, date_completed, user_id, section_id, is_active)
+      VALUES($1, $2, $3, $4, $5, $6) RETURNING id`
     delete props.id
     const insertValues: string[] = Object.values(props)
     const data = await query(createQuery, insertValues)
-    return data.rows[0]
+    return data.rows[0].id
   } catch (e) {
     throw new Error(e.message)
   }
@@ -18,7 +18,7 @@ export const create = async (props: Item): Promise<Item> => {
 export const update = async (props: Item): Promise<void> => {
   try {
     const updateQuery = `UPDATE items
-      SET description = $2, priority = $3, date_completed = $4, user_id = $5, section_id = $6, date_archived = $7, is_active = $8
+      SET description = $2, priority = $3, date_completed = $4, user_id = $5, section_id = $6, is_active = $7
       WHERE id = $1;`
     const updateValues: string[] = Object.values(props)
     await query(updateQuery, updateValues)

@@ -1,4 +1,4 @@
-export default interface Item {
+export interface Item {
   id: string
   description: string
   priority?: number
@@ -6,4 +6,14 @@ export default interface Item {
   user_id: number
   section_id: number
   is_active: boolean
+}
+
+export interface ItemRequest {
+  id: string
+  description: string
+  priority?: number
+  dateCompleted: Date | null
+  userId: number
+  sectionId: number
+  isActive: boolean
 }

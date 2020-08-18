@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { createMeetingSeries, updateMeetingSeries } from '../controllers/series'
+import { postMeetingSeries, putMeetingSeries } from '../controllers/series'
 
 const router = Router()
 
-router.route('/').post(createMeetingSeries).put(updateMeetingSeries)
+router.route('/').post(postMeetingSeries).put(putMeetingSeries)
 
 export default router

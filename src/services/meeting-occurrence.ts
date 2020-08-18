@@ -1,4 +1,4 @@
-import MeetingOccurrence from '../models/meeting-occurrence'
+import { MeetingOccurrence } from '../models/meeting-occurrence'
 import { query } from '../db/index'
 
 export const create = async (meetingSeriesId: string): Promise<string> => {

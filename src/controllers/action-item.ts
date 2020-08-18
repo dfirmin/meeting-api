@@ -1,21 +1,18 @@
-// GET /action-items?userId=0&complete=false&isActive=true (Return Array of Action Items)
-// POST /action-items (Create an action item - return the ID of the item)
-// PUT /action-items/:id (update an action item - return 200 on success)
-import e, { RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
 import { update, getAllByUser, create, remove, getAll } from '../services/action-item'
-import Item from '../models/item'
+import { Item, ItemRequest } from '../models/item'
 
-const itemSchema: yup.ObjectSchema<Item> = yup
+const itemSchema: yup.ObjectSchema<ItemRequest> = yup
   .object({
     id: yup.string().defined(),
     description: yup.string().defined(),
     priority: yup.number().defined(),
-    date_completed: yup.date().nullable().defined(),
-    user_id: yup.number().defined(),
-    section_id: yup.number().defined(),
-    is_active: yup.bool().defined(),
+    dateCompleted: yup.date().nullable().defined(),
+    userId: yup.number().defined(),
+    sectionId: yup.number().defined(),
+    isActive: yup.bool().defined(),
   })
   .defined()
 
@@ -46,16 +43,24 @@ export const getActionItems: RequestHandler = async (req, res, next) => {
 }
 
 export const postActionItems: RequestHandler = async (req, res, next) => {
-  const actionItems: Item = req.body
-
   try {
-    await itemSchema.validate(actionItems, { abortEarly: false })
+    await itemSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
   try {
-    const actionItemId: Item = await create(actionItems)
+    const incomingActionItem: ItemRequest = req.body
+    const newActionItem: Item = {
+      id: '0',
+      description: incomingActionItem.description,
+      priority: incomingActionItem.priority,
+      date_completed: incomingActionItem.dateCompleted,
+      user_id: incomingActionItem.userId,
+      section_id: incomingActionItem.sectionId,
+      is_active: incomingActionItem.isActive,
+    }
+    const actionItemId: Item = await create(newActionItem)
     res.status(201).json({ id: actionItemId })
   } catch (e) {
     return next(createError(500, e.message))
@@ -63,19 +68,27 @@ export const postActionItems: RequestHandler = async (req, res, next) => {
 }
 
 export const putActionItem: RequestHandler = async (req, res, next) => {
-  const actionItem: Item = req.body
-
-  if (!actionItem.id || actionItem.id === '0') {
-    next(createError(400, 'Missing id'))
-  }
   try {
-    await itemSchema.validate(actionItem, { abortEarly: false })
+    await itemSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     return next(createError(400, e.message))
   }
   try {
-    await update(actionItem)
-    res.sendStatus(200).send(`Item modified with ID: ${actionItem.id}`)
+    const incomingActionItem: ItemRequest = req.body
+    if (!incomingActionItem.id || incomingActionItem.id === '0') {
+      next(createError(400, 'Missing id'))
+    }
+    const updatedActionItem: Item = {
+      id: incomingActionItem.id,
+      description: incomingActionItem.description,
+      priority: incomingActionItem.priority,
+      date_completed: incomingActionItem.dateCompleted,
+      user_id: incomingActionItem.userId,
+      section_id: incomingActionItem.sectionId,
+      is_active: incomingActionItem.isActive,
+    }
+    await update(updatedActionItem)
+    res.sendStatus(200).send(`Item modified with ID: ${updatedActionItem.id}`)
   } catch (e) {
     return next(createError(500, e.message))
   }

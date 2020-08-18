@@ -1,34 +1,40 @@
-// POST /ids (Create an IDS item - returns ID of the item)
-// PUT /ids/:id (Update an IDS item - returns a success)
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
 import { update, create, remove, getAll } from '../services/ids'
-import Item from '../models/item'
+import { Item, ItemRequest } from '../models/item'
 
-const itemSchema: yup.ObjectSchema<Item> = yup
+const itemSchema: yup.ObjectSchema<ItemRequest> = yup
   .object({
     id: yup.string().defined(),
     description: yup.string().defined(),
     priority: yup.number().defined(),
-    date_completed: yup.date().nullable().defined(),
-    user_id: yup.number().defined(),
-    section_id: yup.number().defined(),
-    is_active: yup.bool().defined(),
+    dateCompleted: yup.date().nullable().defined(),
+    userId: yup.number().defined(),
+    sectionId: yup.number().defined(),
+    isActive: yup.bool().defined(),
   })
   .defined()
 
 export const postIds: RequestHandler = async (req, res, next) => {
-  const ids: Item = req.body
-
   try {
-    await itemSchema.validate(ids, { abortEarly: false })
+    await itemSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
   try {
-    const IdsId: Item = await create(ids)
+    const incomingIDS: ItemRequest = req.body
+    const newIDS: Item = {
+      id: '0',
+      description: incomingIDS.description,
+      priority: incomingIDS.priority,
+      date_completed: incomingIDS.dateCompleted,
+      user_id: incomingIDS.userId,
+      section_id: incomingIDS.sectionId,
+      is_active: incomingIDS.isActive,
+    }
+    const IdsId: Item = await create(newIDS)
     res.status(201).json({ id: IdsId })
   } catch (e) {
     return next(createError(500, e.message))
@@ -49,20 +55,28 @@ export const getIds: RequestHandler = async (req, res, next) => {
 }
 
 export const putIds: RequestHandler = async (req, res, next) => {
-  const ids: Item = req.body
-
-  if (!ids.id || ids.id === '0') {
-    next(createError(400, 'Missing id'))
-  }
   try {
-    await itemSchema.validate(ids, { abortEarly: false })
+    await itemSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
   try {
-    await update(ids)
-    res.sendStatus(200).send(`Item modified with ID: ${ids.id}`)
+    const incomingIDS: ItemRequest = req.body
+    if (!incomingIDS.id || incomingIDS.id === '0') {
+      next(createError(400, 'Missing id'))
+    }
+    const updatedIDS: Item = {
+      id: incomingIDS.id,
+      description: incomingIDS.description,
+      priority: incomingIDS.priority,
+      date_completed: incomingIDS.dateCompleted,
+      user_id: incomingIDS.userId,
+      section_id: incomingIDS.sectionId,
+      is_active: incomingIDS.isActive,
+    }
+    await update(updatedIDS)
+    res.sendStatus(200).send(`Item modified with ID: ${updatedIDS.id}`)
   } catch (e) {
     return next(createError(500, e.message))
   }

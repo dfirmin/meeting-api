@@ -1,4 +1,4 @@
-import Section from '../models/section'
+import { Section } from '../models/section'
 import { query } from '../db/index'
 
 export const create = async (props: Section): Promise<number> => {

@@ -1,14 +1,14 @@
-interface Series {
+export interface Series {
   id: string
   user_id: string
   time_allocated: number
   start_date: string
   team_id: string
 }
-
-interface SeriesRequest {
+export interface SeriesRequest {
+  id: string
+  userId: string
   timeAllocated: number
-  startDate: Date
+  startDate: string
+  teamId: string
 }
-
-export default Series

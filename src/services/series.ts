@@ -1,4 +1,4 @@
-import Series from '../models/series'
+import { Series } from '../models/series'
 import { query } from '../db/index'
 
 export const create = async (props: Series): Promise<string> => {

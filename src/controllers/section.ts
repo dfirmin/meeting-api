@@ -2,26 +2,32 @@ import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import * as yup from 'yup'
 import { getAll as getAllSections, update, create } from '../services/section'
-import Section from '../models/section'
+import { Section, SectionRequest } from '../models/section'
 
-const sectionSchema: yup.ObjectSchema<Section> = yup
+const sectionSchema: yup.ObjectSchema<SectionRequest> = yup
   .object({
     id: yup.string().defined(),
-    time_allocated: yup.number().defined(),
-    meeting_series_id: yup.string().defined(),
-    section_type_id: yup.string().defined(),
+    timeAllocated: yup.number().defined(),
+    meetingSeriesId: yup.string().defined(),
+    sectionTypeId: yup.string().defined(),
   })
   .defined()
 
 export const postSections: RequestHandler = async (req, res, next) => {
-  const section = req.body
   try {
-    await sectionSchema.validate(section, { abortEarly: false })
+    await sectionSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     return next(createError(400, e.message))
   }
   try {
-    const sectionId = await create(section)
+    const incomingSection: SectionRequest = req.body
+    const newSection: Section = {
+      id: '0',
+      time_allocated: incomingSection.timeAllocated,
+      meeting_series_id: incomingSection.meetingSeriesId,
+      section_type_id: incomingSection.sectionTypeId,
+    }
+    const sectionId = await create(newSection)
     return res.status(200).json(sectionId)
   } catch (e) {
     return next(createError(500, e.message))
@@ -29,8 +35,6 @@ export const postSections: RequestHandler = async (req, res, next) => {
 }
 
 export const getSections: RequestHandler = async (req, res, next) => {
-  // TODO - Given that we have a seriesId, we should attempt to fetch all sections for that series from the database
-  // TODO - If no records are found (meaining the sectionId does not exist), how should we handle this?
   const meetingOccurrenceId = req.query.meetingOccurrenceId as string
   if (!meetingOccurrenceId) {
     return next(createError(400, 'Missing meetingOccurrenceId in querystring'))
@@ -45,20 +49,25 @@ export const getSections: RequestHandler = async (req, res, next) => {
 }
 
 export const putSection: RequestHandler = async (req, res, next) => {
-  const section: Section = req.body
-
-  if (!section.id || section.id === '0') {
-    next(createError(400, 'Missing id'))
-  }
   try {
-    await sectionSchema.validate(section, { abortEarly: false })
+    await sectionSchema.validate(req.body, { abortEarly: false })
   } catch (e) {
     console.log(e)
     return next(createError(400, e.message))
   }
   try {
-    await update(section)
-    return res.sendStatus(200).send(`Meeting modified with ID: ${section.id}`)
+    const incomingSection: SectionRequest = req.body
+    if (!incomingSection.id || incomingSection.id === '0') {
+      next(createError(400, 'Missing id'))
+    }
+    const updatedSection: Section = {
+      id: incomingSection.id,
+      time_allocated: incomingSection.timeAllocated,
+      meeting_series_id: incomingSection.meetingSeriesId,
+      section_type_id: incomingSection.sectionTypeId,
+    }
+    await update(updatedSection)
+    return res.sendStatus(200).send(`Meeting modified with ID: ${updatedSection.id}`)
   } catch (e) {
     return next(createError(500, e.message))
   }
